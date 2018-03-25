@@ -1,6 +1,6 @@
 PANDOC ?= pandoc
 
-all: textemplate pdftemplate wordtemplate requirements
+all: textemplate pdftemplate wordtemplate firstreport requirements
 
 
 # convert the markdown template to latex
@@ -14,6 +14,10 @@ pdftemplate: report_template.md
 # convert the markdown template to word
 wordtemplate: report_template.md
 	$(PANDOC) -o out/report_template.docx $<
+
+# convert first report to pdf 
+firstreport: first_report.tex
+	$(PANDOC) -N -o out/first_report.pdf $<
 
 # convert the markdown requirements to pdf
 requirements: project.md
