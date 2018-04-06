@@ -7,6 +7,9 @@ interface IFetchDataExampleState {
     loading: boolean;
 }
 
+/**
+ * Irrelevant component from the template.
+ */
 export class FetchData extends React.Component<RouteComponentProps<any>, IFetchDataExampleState> {
     constructor(props: RouteComponentProps<any>) {
         super(props);

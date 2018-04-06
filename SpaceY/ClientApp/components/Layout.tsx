@@ -5,6 +5,10 @@ export interface ILayoutProps {
     children?: React.ReactNode;
 }
 
+/**
+ * A component for the basic site layout.
+ * This consists of the navigation menu, and the current view.
+ */
 export class Layout extends React.Component<ILayoutProps, {}> {
     render() {
         return <div className="container-fluid">

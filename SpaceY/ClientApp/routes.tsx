@@ -7,6 +7,11 @@ import { Counter } from "./components/Counter";
 import { Equation } from "./components/Equation";
 import { withRouter } from 'react-router-dom'
 
+/**
+ * Routing for urls on the website.
+ * It will try to match one of the components.
+ * If none match, we redirect to the home page.
+ */
 export const routes =
     <Layout>
         <Switch>

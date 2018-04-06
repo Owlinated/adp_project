@@ -5,6 +5,9 @@ interface ICounterState {
     currentCount: number;
 }
 
+/**
+ * Irrelevant component from the template.
+ */
 export class Counter extends React.Component<RouteComponentProps<any>, ICounterState> {
     constructor(props: RouteComponentProps<any>) {
         super(props);

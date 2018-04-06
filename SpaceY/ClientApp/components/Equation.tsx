@@ -9,12 +9,20 @@ interface IEquationState {
     result: number | undefined;
 }
 
+/**
+ * Component for a detailed equation view.
+ * This enables most interactions, such as evaluating equations.
+ */
 export class Equation extends React.Component<RouteComponentProps<any>, IEquationState> {
     constructor(props: RouteComponentProps<any>) {
         super(props);
         this.state = { id: undefined, loading: true, equation: undefined, result: undefined };
     }
 
+    /**
+     * Update the displayed equation when its id changes.
+     * This can be necessary, when switching between equations.
+     */
     updateState() {
         if (this.state.id != this.props.match.params.id) {
             this.setState({ id: this.props.match.params.id, loading: true, result: undefined });
@@ -26,6 +34,9 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
         }
     }
 
+    /**
+     *  Display the equation and all interaction elements.
+     */
     render() {
         this.updateState();
         return <div>
@@ -37,10 +48,17 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
                </div>;
     }
 
+    /**
+     * Render the equation. Right now this simply displays it as text.
+     * @param equation The equation to render
+     */
     renderEquation(equation: IRestEquation) {
         return <p>{equation.equation}</p>;
     }
 
+    /**
+     * Ask server to evaluate the equation and add the values to the state.
+     */
     evaluateEquation() {
         fetch(`api/Equations/${this.state.id}/Evaluate`)
             .then(response => response.json() as Promise<number>)
