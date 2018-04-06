@@ -18,8 +18,8 @@ export class NavMenu extends React.Component<{}, {}> {
                        <div className="navbar-collapse collapse">
                            <ul className="nav navbar-nav">
                                <li>
-                                   <NavLink to={ "/" } exact activeClassName="active">
-                                       <span className="glyphicon glyphicon-home"></span> Home
+                                   <NavLink to={ "/home" } activeClassName="active">
+                                       <span className="glyphicon glyphicon-sunglasses"></span> Home
                                    </NavLink>
                                </li>
                                <li>

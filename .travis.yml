@@ -17,10 +17,15 @@ addons:
     packages:
       texlive
       lmodern
+      npm
 
 # the build step, details in the Makefile
 script:
   - PANDOC=./pandoc make all
+# restore npm packages
+  - cd SpaceY
+  - npm install
+  - cd ..
 # restore nuget packages and run tests
   - dotnet restore
   - dotnet test ./SpaceY.Tests/SpaceY.Tests.csproj
