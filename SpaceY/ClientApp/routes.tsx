@@ -1,17 +1,19 @@
 import * as React from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 import { FetchData } from "./components/FetchData";
 import { Counter } from "./components/Counter";
-import { Dashboard } from "./components/Dashboard";
 import { Equation } from "./components/Equation";
 import { withRouter } from 'react-router-dom'
 
-export const routes = <Layout>
-                          <Route exact path="/" component={ Home }/>
-                          <Route path="/counter" component={ Counter }/>
-                          <Route path="/fetchdata" component={ FetchData }/>
-                          <Route path="/dashboard/:id?" component={withRouter(Dashboard)}/>
-                          <Route path="/equations/:id" component={withRouter(Equation) }/>
-                      </Layout>;
+export const routes =
+    <Layout>
+        <Switch>
+            <Route path="/home/:id([0-9]*)" component={ withRouter(Home) }/>
+            <Route path="/counter" component={ Counter }/>
+            <Route path="/fetchdata" component={ FetchData }/>
+            <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>
+            <Redirect to="/home/"/>
+        </Switch>
+    </Layout>;
