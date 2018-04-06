@@ -4,10 +4,13 @@ namespace SpaceY.Coffee
 {
 	public class Equation
 	{
+		public int Id { get; }
+
 		private IEquationTerm Term;
 
-		public Equation(string serialized)
+		public Equation(int id, string serialized)
 		{
+			Id = id;
 			var oneTerm = new ConstantEquationTerm(1);
 			Term = new AddEquationTerm(new [] {oneTerm, oneTerm});
 			var result = Term.Evaluate();

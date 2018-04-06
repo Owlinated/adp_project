@@ -12,21 +12,32 @@ namespace SpaceY.Controllers
 	{
 		private EquationsStore equationsStore { get; } = new EquationsStore();
 
-		//[HttpGet("[action]")]
-		[HttpGet]
-		public IEnumerable<RestEquation> Get()
+		[HttpGet("{id}")]
+		public RestEquation Get(int id)
 		{
-			return equationsStore.Equations.Select(equation => new RestEquation{Equation = equation.Serialize()});
+			return equationsStore.Equations
+					.Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() })
+					.FirstOrDefault(equation => equation.Id == id)
+				?? throw new ArgumentException(nameof(id));
 		}
 
 		[HttpGet("[action]")]
-		public float Evaluate(string equation)
+		public IEnumerable<RestEquation> List()
 		{
-			return new Equation(equation).Evaluate();
+			return equationsStore.Equations
+				.Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
+		}
+
+		[HttpGet("[action]/{id}")]
+		public float Evaluate(int id)
+		{
+			return equationsStore.Equations.FirstOrDefault(equation => equation.Id == id)?.Evaluate()
+				?? throw new ArgumentException(nameof(id));
 		}
 
 		public class RestEquation
 		{
+			public int Id { get; set; }
 			public string Equation { get; set; }
 		}
 	}

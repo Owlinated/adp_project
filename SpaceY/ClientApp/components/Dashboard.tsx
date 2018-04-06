@@ -1,9 +1,11 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import "isomorphic-fetch";
+import { NavLink } from "react-router-dom";
+import { IRestEquation } from "../types/IRestEquation";
 
 interface IFetchDataExampleState {
-    equations: Equation[];
+    equations: IRestEquation[];
     loading: boolean;
 }
 
@@ -12,8 +14,8 @@ export class Dashboard extends React.Component<RouteComponentProps<any>, IFetchD
         super(props);
         this.state = { equations: [], loading: true };
 
-        fetch("api/Equations")
-            .then(response => response.json() as Promise<Equation[]>)
+        fetch("api/Equations/List")
+            .then(response => response.json() as Promise<IRestEquation[]>)
             .then(data => {
                 this.setState({ equations: data, loading: false });
             });
@@ -32,7 +34,7 @@ export class Dashboard extends React.Component<RouteComponentProps<any>, IFetchD
                </div>;
     }
 
-    private static renderForecastsTable(forecasts: Equation[]) {
+    private static renderForecastsTable(forecasts: IRestEquation[]) {
         return <table className="table">
                    <thead>
                    <tr>
@@ -41,15 +43,15 @@ export class Dashboard extends React.Component<RouteComponentProps<any>, IFetchD
                    </thead>
                    <tbody>
                    {forecasts.map(equation =>
-                       <tr key={ equation.equation }>
-                           <td>{ equation.equation }</td>
+                       <tr key={ equation.id }>
+                           <td>
+                               <NavLink to={"/equations/" + equation.id} activeClassName="active">
+                                   {equation.equation}
+                               </NavLink>
+                           </td>
                        </tr>
                    )}
                    </tbody>
                </table>;
     }
-}
-
-interface Equation {
-    equation: string;
 }

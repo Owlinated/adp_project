@@ -11,7 +11,7 @@ namespace SpaceY.DataAccess
 		{
 			Equations = new[]
 			{
-				new Equation("1+1")
+				new Equation(0, "1+1")
 			};
 		}
 	}
