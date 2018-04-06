@@ -14,7 +14,7 @@ export class Dashboard extends React.Component<RouteComponentProps<any>, IFetchD
         super(props);
         this.state = { equations: [], loading: true };
 
-        fetch("api/Equations/List")
+        fetch("api/Equations")
             .then(response => response.json() as Promise<IRestEquation[]>)
             .then(data => {
                 this.setState({ equations: data, loading: false });

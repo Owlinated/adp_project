@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using SpaceY.Coffee;
 using SpaceY.DataAccess;
 
 namespace SpaceY.Controllers
@@ -11,6 +10,13 @@ namespace SpaceY.Controllers
 	public class EquationsController : Controller
 	{
 		private EquationsStore equationsStore { get; } = new EquationsStore();
+
+		[HttpGet]
+		public IEnumerable<RestEquation> List()
+		{
+			return equationsStore.Equations
+				.Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
+		}
 
 		[HttpGet("{id}")]
 		public RestEquation Get(int id)
@@ -21,14 +27,7 @@ namespace SpaceY.Controllers
 				?? throw new ArgumentException(nameof(id));
 		}
 
-		[HttpGet("[action]")]
-		public IEnumerable<RestEquation> List()
-		{
-			return equationsStore.Equations
-				.Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
-		}
-
-		[HttpGet("[action]/{id}")]
+		[HttpGet("{id}/[action]")]
 		public float Evaluate(int id)
 		{
 			return equationsStore.Equations.FirstOrDefault(equation => equation.Id == id)?.Evaluate()

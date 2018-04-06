@@ -14,7 +14,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
         super(props);
         this.state = { id: props.match.params.id, loading: true, equation: undefined, result: undefined };
 
-        fetch("api/Equations/" + this.state.id)
+        fetch(`api/Equations/${this.state.id}`)
             .then(response => response.json() as Promise<IRestEquation>)
             .then(data => {
                 this.setState({ equation: data, loading: false });
@@ -36,7 +36,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
     }
 
     private evaluateEquation() {
-        fetch("api/Equations/Evaluate/" + this.state.id)
+        fetch(`api/Equations/${this.state.id}/Evaluate`)
             .then(response => response.json() as Promise<number>)
             .then(data => {
                 this.setState({ result: data });
