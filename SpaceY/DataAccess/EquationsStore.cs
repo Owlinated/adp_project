@@ -11,7 +11,11 @@ namespace SpaceY.DataAccess
 		{
 			Equations = new[]
 			{
-				new Equation(0, "1+1")
+				new Equation(0, "1+1"),
+				new Equation(1, "1+1"),
+				new Equation(2, "1+1"),
+				new Equation(3, "1+1"),
+				new Equation(4, "1+1")
 			};
 		}
 	}
