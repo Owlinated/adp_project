@@ -5,7 +5,7 @@
 2. Use an issue tracker.
     - To keep a prioritized product backlog.
     - And a prioritized commitment for the current sprint.
-    - The tracker should have automatic traceability to git commits.
+    - Automatic traceability to git commits is nice but optional.
     - We suggest using the github issue tracker, or optionally Trello.
 
 3. Build the software with Continuous Integration.
