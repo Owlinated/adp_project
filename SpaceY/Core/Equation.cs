@@ -1,4 +1,5 @@
 ﻿using SpaceY.Core.EquationTerms;
+using NCalc;
 
 namespace SpaceY.Core
 {
@@ -9,27 +10,28 @@ namespace SpaceY.Core
 	public class Equation
 	{
 		public int Id { get; }
-
-		private IEquationTerm Term;
+        public string equationString { get; }
+        public Expression e { get; }
 
 		/// <summary>
 		/// Create an equation by parsing its <paramref name="serialized"/> form.
 		/// </summary>
 		public Equation(int id, string serialized)
 		{
-			Id = id;
 
 			// This only creates a dummy equation
-			var oneTerm = new ConstantTerm(1);
-			Term = new AdditionTerm(new [] {oneTerm, oneTerm});
+            Id = id;
+            equationString = serialized;
+            e = new Expression(serialized);
+
 		}
 
 		/// <summary>
 		/// Determine the equations value
 		/// </summary>
-		public float Evaluate()
+		public object Evaluate()
 		{
-			return Term.Evaluate();
+			return e.Evaluate();
 		}
 
 		/// <summary>
@@ -37,7 +39,7 @@ namespace SpaceY.Core
 		/// </summary>
 		public string Serialize()
 		{
-			return "f() = " + Term.Serialize();
+			return "f() = " + equationString;
 		}
 	}
 }
