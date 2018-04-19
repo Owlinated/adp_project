@@ -6,6 +6,7 @@ import { FetchData } from "./components/FetchData";
 import { Counter } from "./components/Counter";
 import { Equation } from "./components/Equation";
 import { withRouter } from 'react-router-dom'
+import { allEquations } from "./components/AllEquations";
 
 /**
  * Routing for urls on the website.
@@ -17,7 +18,8 @@ export const routes =
         <Switch>
             <Route path="/home/:id([0-9]*)" component={ withRouter(Home) }/>
             <Route path="/counter" component={ Counter }/>
-            <Route path="/fetchdata" component={ FetchData }/>
+            <Route path="/fetchdata" component={FetchData} />
+            <Route path="/allEquations" component={allEquations} />
             <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>
             <Redirect to="/home/"/>
         </Switch>
