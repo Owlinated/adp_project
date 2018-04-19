@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-
+import { DragSource } from 'react-dnd';
 
 
 /**
