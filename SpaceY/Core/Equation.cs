@@ -1,5 +1,4 @@
-﻿using SpaceY.Core.EquationTerms;
-using NCalc;
+﻿using NCalc;
 
 namespace SpaceY.Core
 {
