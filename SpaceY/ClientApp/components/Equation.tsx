@@ -40,12 +40,14 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
     render() {
         this.updateState();
         return <div>
-                   <h1>Equation</h1>
-                   <p>Id: {this.state.id} </p>
-                   {this.state.loading ? <p>loading</p> : this.renderEquation(this.state.equation!)}
-                   <button onClick={() => { this.evaluateEquation() }}>Evaluate</button>
-                   <p>{this.state.result}</p>
-               </div>;
+            <h1>Equation</h1>
+            <p>Id: {this.state.id} </p>
+            {this.state.loading ? <p>loading</p> : this.renderEquation(this.state.equation!)}
+            <button onClick={() => { this.evaluateEquation() }}>Evaluate</button>
+            <div>
+                <input type="text" readOnly value={this.state.result} />
+            </div>
+        </div>;
     }
 
     /**
