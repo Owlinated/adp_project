@@ -1,5 +1,5 @@
-using SpaceY.Core.EquationTerms;
 using Xunit;
+using SpaceY.Core;
 
 namespace SpaceY.Tests
 {
@@ -8,21 +8,16 @@ namespace SpaceY.Tests
 	/// </summary>
 	public class EquationTest
 	{
-		[Fact]
-		public void AdditionTest()
-		{
-			var oneTerm = new ConstantTerm(1);
-			var additionTerm = new AdditionTerm(new [] {oneTerm, oneTerm});
-			// 1+1 = 2
-			Assert.Equal(2, additionTerm.Evaluate());
-		}
+        [Fact]
+        public void Test1 () {
+            Equation e1 = new Equation(0, "1 + 1");
+            Assert.Equal(2, e1.Evaluate());
+        }
 
-		[Fact]
-		public void AdditionSerialization()
-		{
-			var oneTerm = new ConstantTerm(1);
-			var additionTerm = new AdditionTerm(new [] {oneTerm, oneTerm});
-			Assert.Equal("(1 + 1)", additionTerm.Serialize());
-		}
+        [Fact]
+        public void Test2 () {
+            Equation e2 = new Equation(1, "-1 + 1");
+            Assert.Equal(0, e2.Evaluate());
+        }
 	}
 }
