@@ -26,7 +26,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
     updateState() {
         if (this.state.id != this.props.match.params.id) {
             this.setState({ id: this.props.match.params.id, loading: true, result: undefined });
-            fetch(`api/Equations/${this.state.id}`)
+            fetch(`api/Equations/${this.props.match.params.id}`)
                 .then(response => response.json() as Promise<IRestEquation>)
                 .then(data => {
                     this.setState({ equation: data, loading: false });
