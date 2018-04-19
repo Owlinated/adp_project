@@ -41,7 +41,7 @@ namespace SpaceY.Controllers
 		/// Get the value of location with <paramref name="id"/>.
 		/// </summary>
 		[HttpGet("{id}/[action]")]
-		public float Evaluate(int id)
+		public object Evaluate(int id)
 		{
 			return EquationStore.Equations.FirstOrDefault(equation => equation.Id == id)?.Evaluate()
 				?? throw new ArgumentException(nameof(id));

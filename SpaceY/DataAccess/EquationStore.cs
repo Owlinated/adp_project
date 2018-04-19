@@ -15,11 +15,10 @@ namespace SpaceY.DataAccess
 		{
 			Equations = new[]
 			{
-				new Equation(0, "1+1"),
-				new Equation(1, "1+1"),
-				new Equation(2, "1+1"),
-				new Equation(3, "1+1"),
-				new Equation(4, "1+1")
+				new Equation(0, "1 + 2"),
+                new Equation(1, "3 + 5"),
+                new Equation(2, "Sin(0)"),
+                new Equation(3, "1 + 2 + 3 + 4 + 5")
 			}.AsQueryable();
 		}
 	}
