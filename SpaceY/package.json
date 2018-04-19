@@ -31,5 +31,10 @@
     "webpack": "^2.2.0",
     "webpack-hot-middleware": "2.21.2",
     "ajv": "^6.0.0"
+  },
+  "dependencies": {
+    "@types/react-dnd": "^2.0.36",
+    "react-dnd": "^2.6.0",
+    "react-dnd-html5-backend": "^2.6.0"
   }
 }
