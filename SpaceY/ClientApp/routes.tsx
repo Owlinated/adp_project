@@ -6,6 +6,7 @@ import { FetchData } from "./components/FetchData";
 import { Counter } from "./components/Counter";
 import { Card } from "./components/Card";
 import { Equation } from "./components/Equation";
+import { EquationCreator } from "./components/EquationCreator";
 import { withRouter } from 'react-router-dom'
 
 /**
@@ -17,6 +18,7 @@ export const routes =
     <Layout>
         <Switch>
             <Route path="/home/:id([0-9]*)" component={ withRouter(Home) }/>
+            <Route path="/equationcreator" component={ EquationCreator } />
             <Route path="/counter" component={ Counter }/>
             <Route path="/fetchdata" component={ FetchData }/>
             <Route path="/card" component={ Card }/>

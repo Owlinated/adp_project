@@ -14,6 +14,7 @@ export class NavMenu extends React.Component<{}, {}> {
                                <span className="icon-bar"></span>
                                <span className="icon-bar"></span>
                                <span className="icon-bar"></span>
+                               <span className="icon-bar"></span>
                            </button>
                            <Link className="navbar-brand" to={ "/" }>SpaceY</Link>
                        </div>
@@ -23,6 +24,11 @@ export class NavMenu extends React.Component<{}, {}> {
                                <li>
                                    <NavLink to={ "/home" } activeClassName="active">
                                        <span className="glyphicon glyphicon-sunglasses"></span> Home
+                                   </NavLink>
+                               </li>
+                               <li>
+                                   <NavLink to={"/equationcreator"} activeClassName="active">
+                                        <span className="glyphicon glyphicon-plus-sign"></span> New Equation
                                    </NavLink>
                                </li>
                                <li>
