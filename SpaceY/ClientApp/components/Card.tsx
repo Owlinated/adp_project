@@ -1,59 +1,136 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { DragSource } from 'react-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
+
 
 
 /**
  * Test of drag and drop
  */
+ 
+
+//Generate list items
+var getItems = function getItems(count) {
+  return Array.from({ length: count }, function (v, k) {
+    return k;
+  }).map(function (k) {
+    return {
+      id: "item-" + k,
+      content: "equation " + k
+    };
+  });
+};
+  
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  // some basic styles for the items 
+  userSelect: 'none',
+  padding: grid * 2.5,
+  margin: `0 0 ${grid}px 0`,
+
+  // change background colour when dragging item
+  background: isDragging ? 'lightgreen' : 'lightgrey',
+
+  // styles we need to apply on draggables
+  ...draggableStyle,
+});
+
+const getListStyle = isDraggingOver => ({
+  background: isDraggingOver ? 'white' : 'white',
+  padding: grid,
+  width: 500,
+});
+
+
+ 
+export class Card extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: getItems(10),
+    };
+    this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      getItems(10),
+      result.source.index,
+      result.destination.index
+    );
+
+    this.setState({
+      items,
+    });
+  }
+
+  render() {
+    return (
+      <DragDropContext onDragEnd={this.onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              style={getListStyle(snapshot.isDraggingOver)}
+            >
+              {getItems(10).map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style
+                      )}
+                    >
+                      {item.content}
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    );
+  }
+}
+
+
+/*
+
 export class Card extends React.Component<RouteComponentProps<any>> {
     constructor(props: RouteComponentProps<any>) {
-		super(props)
-		//this.moveCard = this.moveCard.bind(this)
-		this.state = {
-			cards: [
-				{
-					id: 1,
-					text: 'Write a cool JS library',
-				},
-				{
-					id: 2,
-					text: 'Make it generic enough',
-				},
-				{
-					id: 3,
-					text: 'Write README',
-				},
-				{
-					id: 4,
-					text: 'Create some examples',
-				},
-				{
-					id: 5,
-					text:
-						'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
-				},
-				{
-					id: 6,
-					text: '???',
-				},
-				{
-					id: 7,
-					text: 'PROFIT',
-				},
-			],
-		}
-	}
+        super(props);
+        this.state = { currentCount: 0 };
+    }
 
     render() {
         return <div>
-                  
+                   <h1>TEST</h1>
+
                </div>;
     }
-    
-    
-    
 
     
-    
 }
+*/

@@ -33,7 +33,9 @@
     "ajv": "^6.0.0"
   },
   "dependencies": {
+    "@types/react-beautiful-dnd": "^6.0.1",
     "@types/react-dnd": "^2.0.36",
+    "react-beautiful-dnd": "^7.1.0",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0"
   }
