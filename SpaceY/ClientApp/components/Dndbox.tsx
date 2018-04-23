@@ -56,7 +56,7 @@ var getListStyle = function getListStyle(isDraggingOver: any) {
 
 
  
-export class Card extends React.Component {
+export class Dndbox extends React.Component {
   constructor(props: RouteComponentProps<any>) {
     super(props);
     this.state = {
@@ -120,7 +120,7 @@ export class Card extends React.Component {
 
 /*
 
-export class Card extends React.Component<RouteComponentProps<any>> {
+export class Dndbox extends React.Component<RouteComponentProps<any>> {
     constructor(props: RouteComponentProps<any>) {
         super(props);
         this.state = { currentCount: 0 };
