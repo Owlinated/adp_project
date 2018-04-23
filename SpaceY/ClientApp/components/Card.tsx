@@ -12,7 +12,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
  
 
 //Generate list items
-var getItems = function getItems(count) {
+var getItems = function getItems(count: number) {
   return Array.from({ length: count }, function (v, k) {
     return k;
   }).map(function (k) {
@@ -23,7 +23,7 @@ var getItems = function getItems(count) {
   });
 };
   
-const reorder = (list, startIndex, endIndex) => {
+const reorder = (list: Array<any>, startIndex: number, endIndex: number) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
@@ -33,7 +33,7 @@ const reorder = (list, startIndex, endIndex) => {
 
 const grid = 8;
 
-const getItemStyle = (isDragging, draggableStyle) => ({
+const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   // some basic styles for the items 
   userSelect: 'none',
   padding: grid * 2.5,
@@ -46,16 +46,18 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 });
 
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'white' : 'white',
-  padding: grid,
-  width: 500,
-});
+var getListStyle = function getListStyle(isDraggingOver: any) {
+  return {
+    background: isDraggingOver ? 'white' : 'white',
+    padding: grid,
+    width: 500
+  };
+};
 
 
  
 export class Card extends React.Component {
-  constructor(props) {
+  constructor(props: RouteComponentProps<any>) {
     super(props);
     this.state = {
       items: getItems(10),
@@ -63,7 +65,7 @@ export class Card extends React.Component {
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
-  onDragEnd(result) {
+  onDragEnd(result: any) {
     // dropped outside the list
     if (!result.destination) {
       return;
