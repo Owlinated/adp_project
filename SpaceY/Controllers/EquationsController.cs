@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SpaceY.DataAccess;
+using SpaceY.Core;
 
 namespace SpaceY.Controllers
 {
@@ -47,6 +48,21 @@ namespace SpaceY.Controllers
 				?? throw new ArgumentException(nameof(id));
 		}
 
+        [HttpGet("[action]")]
+        public object Evaluate(string eq)
+        {
+            if (string.IsNullOrWhiteSpace(eq)) {
+                return new EvaluationResult { Success = true, Value = 0 };
+            }
+            try {
+                var result = new Equation(0, Uri.UnescapeDataString(eq)).Evaluate();
+                return new EvaluationResult { Success = true, Value = result };
+            } catch {
+                return new EvaluationResult { Success = false };
+            }
+
+        }
+
 		/// <summary>
 		/// Equation representation that is shared between client and server
 		/// </summary>
@@ -55,5 +71,10 @@ namespace SpaceY.Controllers
 			public int Id { get; set; }
 			public string Equation { get; set; }
 		}
+
+        public class EvaluationResult {
+            public bool Success { get; set; }
+            public object Value { get; set; }
+        }
 	}
 }
