@@ -4,7 +4,7 @@ import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 import { FetchData } from "./components/FetchData";
 import { Counter } from "./components/Counter";
-import { Card } from "./components/Card";
+import { Dndbox } from "./components/Dndbox";
 import { Equation } from "./components/Equation";
 import { EquationCreator } from "./components/EquationCreator";
 import { withRouter } from 'react-router-dom'
@@ -21,7 +21,7 @@ export const routes =
             <Route path="/equationcreator" component={ EquationCreator } />
             <Route path="/counter" component={ Counter }/>
             <Route path="/fetchdata" component={ FetchData }/>
-            <Route path="/card" component={ Card }/>
+            <Route path="/dndbox" component={ Dndbox }/>
             <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>
             <Redirect to="/home/"/>
         </Switch>
