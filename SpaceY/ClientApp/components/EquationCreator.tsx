@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { IEvaluationResult } from '../types/IEvaluationResult';
 
 //--- The creator interface which defines the data structure of our component  
 interface ICreatorState
@@ -8,6 +9,7 @@ interface ICreatorState
     CurrentDisabledButtons: any;
     OpenBrackets: number;
     NumberStatus: NumberStatus;
+    Result: number;
 }
 
 //--- Functional Component for creating the buttons of our component
@@ -84,6 +86,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             EquationText: "",
             CurrentDisabledButtons: this.DisButtons[this.DefaultSet],
             OpenBrackets: this.OpenedBrackets,
+            Result: 0,
             NumberStatus: this.NumberStatus.Clone()
         };
     }
@@ -272,10 +275,37 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     GetEquationValue()
     {
         let equationtext = this.state.EquationText;
-        if (equationtext)
-            return equationtext.replace("×", "*").replace("÷", "/").replace("X", "var(X)").replace("Y", "var(Y)").replace("Z", "var(Z)")
-        else
+        if (equationtext) {
+            let result = equationtext
+                .replace(/×/g, "*")
+                .replace(/÷/g, "/")
+                .replace(/\+/g, "%2B")
+                .replace(/X/g, "var(X)")
+                .replace(/Y/g, "var(Y)")
+                .replace(/Z/g, "var(Z)")
+                .replace(/sin\(/g, "Sin\(");
+            for (let i = 0; i < this.state.OpenBrackets; ++i)
+                result += ")";
+            return result;
+        } else {
             return "";
+        }
+           
+    }
+
+    //-- Called on every change to fetch data from server
+    componentDidUpdate(prevProps: any, prevState: ICreatorState) {
+        if (prevState.EquationText !== this.state.EquationText) {
+            fetch(`api/Equations/Evaluate?eq=${encodeURIComponent(this.GetEquationValue())}`)
+                .then(response => response.json() as Promise<IEvaluationResult>)
+                .then(data => {
+                    if (data.success) {
+                        this.setState({ Result: data.value });
+                    } else {
+                        this.setState({ Result: 0 });
+                    }
+                });
+        }
     }
 
     //--- The render function of our component
@@ -287,9 +317,14 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                 <div className="creatorcontainerdiv">
                     <div className="creatorfirstdiv">
                         <div><h4>Equation Description:</h4><input type="text" className="form-control" /></div>
-                        <div><h4>Current Input:</h4>{this.state.EquationText}</div>
-                        <div><h4>Current Value:</h4>{this.GetEquationValue()}</div>
-                        <span className="text-danger" hidden={this.OpenedBrackets === 0}>Note: Some open brackets are still not closed!</span>
+                        <div><h4>Current Input:</h4>
+                        <textarea readOnly={true} rows={3} className="form-control creatortextarea" value={this.state.EquationText} />
+                        </div>
+                        <div><h4>Current Value:</h4>
+                        <textarea readOnly={true} rows={3} className="form-control creatortextarea" value={this.GetEquationValue()} /></div>
+                        <div><h4>Result: </h4></div>
+                        <p><strong>{ this.state.Result}</strong></p>
+                      <span className="text-danger" hidden={this.OpenedBrackets === 0}>Note: Some open brackets are still not closed!</span>
                     </div>
                     <div className="creatorseconddiv">
                         <div>{this.generateButtons(0, 4)}</div>
