@@ -283,7 +283,8 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                 .replace(/X/g, "var(X)")
                 .replace(/Y/g, "var(Y)")
                 .replace(/Z/g, "var(Z)")
-                .replace(/sin\(/g, "Sin\(");
+                .replace(/sin\(/g, "Sin\(")
+                .replace(/cos\(/g, "Cos\(");
             for (let i = 0; i < this.state.OpenBrackets; ++i)
                 result += ")";
             return result;
