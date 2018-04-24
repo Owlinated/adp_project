@@ -293,24 +293,24 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
            
     }
 
-    //-- Called on every change
-    // TODO creates a loop
-    updateState() {
-        fetch(`api/Equations/Evaluate?eq=${encodeURIComponent(this.GetEquationValue())}`)
-            .then(response => response.json() as Promise<IEvaluationResult>)
-            .then(data => {
-                if (data.success) {
-                    this.setState({ Result: data.value });
-                } else {
-                    this.setState({ Result: 0 });
-                }
-            });
+    //-- Called on every change to fetch data from server
+    componentDidUpdate(prevProps: any, prevState: ICreatorState) {
+        if (prevState.EquationText !== this.state.EquationText) {
+            fetch(`api/Equations/Evaluate?eq=${encodeURIComponent(this.GetEquationValue())}`)
+                .then(response => response.json() as Promise<IEvaluationResult>)
+                .then(data => {
+                    if (data.success) {
+                        this.setState({ Result: data.value });
+                    } else {
+                        this.setState({ Result: 0 });
+                    }
+                });
+        }
     }
 
     //--- The render function of our component
     render()
     {
-        this.updateState();
         return (
             <div>
                 <div><h1>Equation Creator</h1></div>

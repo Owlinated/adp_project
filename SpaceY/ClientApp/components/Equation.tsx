@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router";
 import { IRestEquation } from "../types/IRestEquation";
 
 interface IEquationState {
-    id: number | undefined;
     loading: boolean;
     equation: IRestEquation | undefined;
     result: number | undefined;
@@ -16,32 +15,39 @@ interface IEquationState {
 export class Equation extends React.Component<RouteComponentProps<any>, IEquationState> {
     constructor(props: RouteComponentProps<any>) {
         super(props);
-        this.state = { id: undefined, loading: true, equation: undefined, result: undefined };
+        this.state = { loading: true, equation: undefined, result: undefined };
+        this.fetchEquation();
     }
 
     /**
      * Update the displayed equation when its id changes.
      * This can be necessary, when switching between equations.
      */
-    updateState() {
-        if (this.state.id != this.props.match.params.id) {
-            this.setState({ id: this.props.match.params.id, loading: true, result: undefined });
-            fetch(`api/Equations/${this.props.match.params.id}`)
-                .then(response => response.json() as Promise<IRestEquation>)
-                .then(data => {
-                    this.setState({ equation: data, loading: false });
-                });
+    componentDidUpdate(prevProps: RouteComponentProps<any>, prevState: IEquationState) {
+        if (prevProps.match.params.id !== this.props.match.params.id) {
+            this.fetchEquation();
         }
+    }
+
+    /**
+     * Fetch the current equation from the server.
+     */
+    fetchEquation() {
+        this.setState({ loading: true, result: undefined });
+        fetch(`api/Equations/${this.props.match.params.id}`)
+            .then(response => response.json() as Promise<IRestEquation>)
+            .then(data => {
+                this.setState({ equation: data, loading: false });
+            });
     }
 
     /**
      *  Display the equation and all interaction elements.
      */
     render() {
-        this.updateState();
         return <div>
             <h1>Equation</h1>
-            <p>Id: {this.state.id} </p>
+            <p>Id: {this.props.match.params.id} </p>
             {this.state.loading ? <p>loading</p> : this.renderEquation(this.state.equation!)}
             <button onClick={() => { this.evaluateEquation() }}>Evaluate</button>
             <div>
@@ -62,7 +68,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
      * Ask server to evaluate the equation and add the values to the state.
      */
     evaluateEquation() {
-        fetch(`api/Equations/${this.state.id}/Evaluate`)
+        fetch(`api/Equations/${this.props.match.params.id}/Evaluate`)
             .then(response => response.json() as Promise<number>)
             .then(data => {
                 this.setState({ result: data });
