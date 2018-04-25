@@ -1,4 +1,8 @@
-﻿using NCalc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NCalc;
+using SpaceY.Interface;
 
 namespace SpaceY.Core
 {
@@ -38,9 +42,29 @@ namespace SpaceY.Core
         /// <summary>
         /// Determine the equations value
         /// </summary>
-        public object Evaluate()
+        public decimal Evaluate(IList<RestEquationParam> parameters)
         {
-            return Expression.Evaluate();
+            void EvaluateParams(string name, FunctionArgs args)
+            {
+                if (name != "var")
+                {
+                    return;
+                }
+
+                var index = (int)args.Parameters[0].Evaluate();
+                var param = parameters[index];
+                args.Result = param.Value ?? param.Default;
+            }
+
+            try
+            {
+                Expression.EvaluateFunction += EvaluateParams;
+                return Convert.ToDecimal(Expression.Evaluate());
+            }
+            finally
+            {
+                Expression.EvaluateFunction -= EvaluateParams;
+            }
         }
 
         /// <summary>

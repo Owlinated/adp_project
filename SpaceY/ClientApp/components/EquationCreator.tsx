@@ -1,6 +1,8 @@
 ﻿import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { IEvaluationResult } from '../types/IEvaluationResult';
+import { IEvaluationResult } from "../interface/IEvaluationResult";
+import { IRestEquation } from "../interface/IRestEquation";
+import { IRestEquationParam } from "../interface/IRestEquationParam";
 
 //--- The creator interface which defines the data structure of our component  
 interface ICreatorState
@@ -9,7 +11,7 @@ interface ICreatorState
     CurrentDisabledButtons: any;
     OpenBrackets: number;
     NumberStatus: NumberStatus;
-    Result: number;
+    Result: any;
 }
 
 //--- Functional Component for creating the buttons of our component
@@ -277,7 +279,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         let openBrackets = this.state.OpenBrackets;
 
         // Remove trailing operators
-        const trailingOperator = /([×÷\+\-XYZ]|sin|cos|\()$/;
+        const trailingOperator = /([×÷\+\-]|sin|cos|\()$/;
         while (equationtext.match(trailingOperator)) {
             if (equationtext.match(/\($/)) openBrackets--;
             equationtext = equationtext.replace(trailingOperator, "");
@@ -288,9 +290,9 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                 // Replace tokens with interface variants
                 .replace(/×/g, "*")
                 .replace(/÷/g, "/")
-                .replace(/X/g, "var(X)")
-                .replace(/Y/g, "var(Y)")
-                .replace(/Z/g, "var(Z)")
+                .replace(/X/g, "var(0)")
+                .replace(/Y/g, "var(1)")
+                .replace(/Z/g, "var(2)")
                 .replace(/sin\(/g, "Sin\(")
                 .replace(/cos\(/g, "Cos\(");
             for (let i = 0; i < openBrackets; ++i)
@@ -299,19 +301,34 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         } else {
             return "";
         }
+    }
 
+    //-- Build a rest equation form the current state
+    GetRestEquation(): IRestEquation {
+        const params = [{ name: "X", default: 0 }, { name: "Y", default: 1 }, { name: "Z", default: 2 }] as IRestEquationParam[];
+        return { equation: this.GetEquationValue(), parameters: params } as IRestEquation;
     }
 
     //-- Called on every change to fetch data from server
     componentDidUpdate(prevProps: any, prevState: ICreatorState) {
         if (prevState.EquationText !== this.state.EquationText) {
-            fetch(`api/Equations/Evaluate?eq=${encodeURIComponent(this.GetEquationValue())}`)
+            // Post current equation to server
+            fetch("api/Equations/Evaluate",
+                    {
+                        method: "POST",
+                        headers: {
+                            'Accept': "application/json",
+                            'Content-Type': "application/json",
+                        },
+                        body: JSON.stringify(this.GetRestEquation())
+                })
+            // Interpret answer as result, and update state
                 .then(response => response.json() as Promise<IEvaluationResult>)
                 .then(data => {
                     if (data.success) {
                         this.setState({ Result: data.value });
                     } else {
-                        this.setState({ Result: 0 });
+                        this.setState({ Result: "Invalid equation" });
                     }
                 });
         }

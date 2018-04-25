@@ -2,7 +2,7 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import "isomorphic-fetch";
 import { NavLink } from "react-router-dom";
-import { IRestEquation } from "../types/IRestEquation";
+import { IRestEquation } from "../interface/IRestEquation";
 import { Equation } from "./Equation";
 
 interface IHomeState {
