@@ -52,7 +52,7 @@ namespace SpaceY.Controllers
         [HttpGet("{id}/[action]")]
         public object Evaluate(int id, RestEquationParam[] parameters)
         {
-            return EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id)?.Evaluate(parameters)
+            return EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id)?.Evaluate()
                 ?? throw new ArgumentException(nameof(id));
         }
 
@@ -69,8 +69,7 @@ namespace SpaceY.Controllers
 
             try
             {
-                var parsed = new Equation(id: 0, serialized: Uri.UnescapeDataString(equation.Equation));
-                var result = parsed.Evaluate(equation.Parameters);
+                var result = Equation.Create(id: 0, equation: equation).Evaluate();
                 return new RestEvaluationResult { Success = true, Value = result };
             }
             catch
