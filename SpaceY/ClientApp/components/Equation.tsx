@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { IRestEquation } from "../types/IRestEquation";
+import { IRestEquation } from "../interface/IRestEquation";
 
 interface IEquationState {
     loading: boolean;

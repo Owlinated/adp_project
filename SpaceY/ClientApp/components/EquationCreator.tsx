@@ -1,6 +1,8 @@
 ﻿import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { IEvaluationResult } from '../types/IEvaluationResult';
+import { IEvaluationResult } from "../interface/IEvaluationResult";
+import { IRestEquation } from "../interface/IRestEquation";
+import { IRestEquationParam } from "../interface/IRestEquationParam";
 
 //--- The creator interface which defines the data structure of our component  
 interface ICreatorState
@@ -9,7 +11,7 @@ interface ICreatorState
     CurrentDisabledButtons: any;
     OpenBrackets: number;
     NumberStatus: NumberStatus;
-    Result: number;
+    Result: any;
     DefaultValues: number[];
 }
 
@@ -279,43 +281,64 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     }
 
     //--- Get the value of the current equation which should be sent to the backend
-    GetEquationValue()
-    {
+    GetEquationValue() {
         let equationtext = this.state.EquationText;
+        let openBrackets = this.state.OpenBrackets;
+
+        // Remove trailing operators
+        const trailingOperator = /([×÷\+\-]|sin|cos|\()$/;
+        while (equationtext.match(trailingOperator)) {
+            if (equationtext.match(/\($/)) openBrackets--;
+            equationtext = equationtext.replace(trailingOperator, "");
+        }
+
         if (equationtext) {
             let result = equationtext
+                // Replace tokens with interface variants
                 .replace(/×/g, "*")
                 .replace(/÷/g, "/")
-                .replace(/\+/g, "%2B")
-                //.replace(/X/g, "var(X)")
-                //.replace(/Y/g, "var(Y)")
-                //.replace(/Z/g, "var(Z)")
-                .replace(/X/g, this.DefaultValues[0].toString())
-                .replace(/Y/g, this.DefaultValues[1].toString())
-                .replace(/Z/g, this.DefaultValues[2].toString())
+                .replace(/X/g, "var(0)")
+                .replace(/Y/g, "var(1)")
+                .replace(/Z/g, "var(2)")
                 .replace(/sin\(/g, "Sin\(")
                 .replace(/cos\(/g, "Cos\(");
-            for (let i = 0; i < this.state.OpenBrackets; ++i)
+            for (let i = 0; i < openBrackets; ++i)
                 result += ")";
             return result;
         } else {
             return "";
         }
-           
+    }
+
+    //-- Build a rest equation form the current state
+    GetRestEquation(): IRestEquation {
+        const params = [
+            { name: "X", default: this.state.DefaultValues[0] },
+            { name: "Y", default: this.state.DefaultValues[1] },
+            { name: "Z", default: this.state.DefaultValues[2] }] as IRestEquationParam[];
+        return { equation: this.GetEquationValue(), parameters: params } as IRestEquation;
     }
 
     //-- Called on every change to fetch data from server
-    componentDidUpdate(prevProps: any, prevState: ICreatorState)
-    {
-        if (prevState.EquationText !== this.state.EquationText || JSON.stringify(prevState.DefaultValues) !== JSON.stringify(this.state.DefaultValues))
-        {
-            fetch(`api/Equations/Evaluate?eq=${encodeURIComponent(this.GetEquationValue())}`)
+    componentDidUpdate(prevProps: any, prevState: ICreatorState) {
+        if (prevState.EquationText !== this.state.EquationText || prevState.DefaultValues !== this.state.DefaultValues) {
+            // Post current equation to server
+            fetch("api/Equations/Evaluate",
+                    {
+                        method: "POST",
+                        headers: {
+                            'Accept': "application/json",
+                            'Content-Type': "application/json",
+                        },
+                        body: JSON.stringify(this.GetRestEquation())
+                })
+            // Interpret answer as result, and update state
                 .then(response => response.json() as Promise<IEvaluationResult>)
                 .then(data => {
                     if (data.success) {
                         this.setState({ Result: data.value });
                     } else {
-                        this.setState({ Result: 0 });
+                        this.setState({ Result: "Invalid equation" });
                     }
                 });
         }

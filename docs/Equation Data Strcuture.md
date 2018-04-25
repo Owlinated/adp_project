@@ -25,4 +25,6 @@ For the equation part we allow the following tokens:
  - operations: + - * /
  - expressions: Sin() Cos()
  - features: ( )
- - variables: Var()
+ - variables: Var(0)
+
+Variables are indexed by their position in the list.
