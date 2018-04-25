@@ -27,7 +27,12 @@ namespace SpaceY.DataAccess
                 new Equation(1, "3 + 5"),
                 new Equation(2, "Sin(0)"),
                 new Equation(3, "1 + 2 + 3 + 4 + 5"),
-                new Equation(4, "7 * 7")
+                new Equation(4, "7 * 7"),
+                new Equation(5, "1 + 2"),
+                new Equation(6, "3 + 5"),
+                new Equation(7, "Sin(0)"),
+                new Equation(8, "1 + 2 + 3 + 4 + 5"),
+                new Equation(9, "7 * 7")
             }.AsQueryable();
         }
 	}
