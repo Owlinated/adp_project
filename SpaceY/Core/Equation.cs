@@ -22,7 +22,6 @@ namespace SpaceY.Core
             EquationString = serialized;
             Parameters = parameters ?? new List<RestEquationParam>();
             Expression = new Expression(serialized);
-            Expression.EvaluateFunction += EvaluateFunction;
         }
 
         /// <summary>
@@ -56,9 +55,35 @@ namespace SpaceY.Core
         /// <summary>
         /// Determine the equations value
         /// </summary>
-        public decimal Evaluate()
+        public decimal Evaluate(decimal[] parameterValues = null)
         {
-            return Convert.ToDecimal(Expression.Evaluate());
+            try
+            {
+                Expression.EvaluateFunction += EvaluateFunction;
+                return Convert.ToDecimal(Expression.Evaluate());
+            }
+            finally
+            {
+                Expression.EvaluateFunction -= EvaluateFunction;
+            }
+
+            void EvaluateFunction(string name, FunctionArgs args)
+            {
+                if (name != "var")
+                {
+                    return;
+                }
+
+                var index = (int)args.Parameters[0].Evaluate();
+                var param = Parameters[index];
+
+                if (parameterValues?.Length > index)
+                {
+                    args.Result = parameterValues[index];
+                }
+
+                args.Result = param.Default;
+            }
         }
 
         /// <summary>
@@ -67,18 +92,6 @@ namespace SpaceY.Core
         public string Serialize()
         {
             return "f() = " + EquationString;
-        }
-
-        private void EvaluateFunction(string name, FunctionArgs args)
-        {
-            if (name != "var")
-            {
-                return;
-            }
-
-            var index = (int)args.Parameters[0].Evaluate();
-            var param = Parameters[index];
-            args.Result = param.Value ?? param.Default;
         }
     }
 }
