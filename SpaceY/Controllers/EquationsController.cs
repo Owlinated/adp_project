@@ -19,15 +19,19 @@ namespace SpaceY.Controllers
         private EquationStore EquationStore { get; } = new EquationStore();
 
         /// <summary>
-        /// Get list of all equations.
+        /// Get list of all equations, couldn't get it to pass a boolean so it checks a string for now.
         /// </summary>
         [HttpGet]
-        public IEnumerable<RestEquation> List()
+        public IEnumerable<RestEquation> List(string all)
         {
-            return EquationStore
-                  .Equations
-                  .Select(equation =>
-                       new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
+            if (all == "true")
+            {
+                return EquationStore.AllEquations
+                .Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
+            }
+
+            return EquationStore.Equations
+                .Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
         }
 
         /// <summary>
@@ -36,12 +40,10 @@ namespace SpaceY.Controllers
         [HttpGet("{id}")]
         public RestEquation Get(int id)
         {
-            return EquationStore
-                  .Equations
-                  .Select(equation =>
-                       new RestEquation { Id = equation.Id, Equation = equation.Serialize() })
-                  .FirstOrDefault(equation => equation.Id == id) ??
-                   throw new ArgumentException(nameof(id));
+            return EquationStore.AllEquations
+                    .Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() })
+                    .FirstOrDefault(equation => equation.Id == id)
+                ?? throw new ArgumentException(nameof(id));
         }
 
         /// <summary>
@@ -50,11 +52,8 @@ namespace SpaceY.Controllers
         [HttpGet("{id}/[action]")]
         public object Evaluate(int id, RestEquationParam[] parameters)
         {
-            return EquationStore
-                  .Equations
-                  .FirstOrDefault(equation => equation.Id == id)
-                 ?.Evaluate(parameters) ??
-                   throw new ArgumentException(nameof(id));
+            return EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id)?.Evaluate(parameters)
+                ?? throw new ArgumentException(nameof(id));
         }
 
         /// <summary>

@@ -23,7 +23,12 @@
 
 .creatortextarea {
     resize: none;
-    font-size: 20px;
+    font-size: 18px;
+}
+
+.creatordefaultvalue {
+    width: 95%;
+    margin-right: 5%;
 }
 
 .creatorcontainerdiv {

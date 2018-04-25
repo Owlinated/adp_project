@@ -6,6 +6,7 @@ import { Dndbox } from "./components/Dndbox";
 import { Equation } from "./components/Equation";
 import { EquationCreator } from "./components/EquationCreator";
 import { withRouter } from 'react-router-dom'
+import { AllEquations } from "./components/AllEquations";
 
 /**
  * Routing for urls on the website.
@@ -18,7 +19,8 @@ export const routes =
             <Route path="/home/:id([0-9]*)" component={ withRouter(Home) }/>
             <Route path="/equationcreator" component={ EquationCreator } />
             <Route path="/dndbox" component={ Dndbox }/>
+            <Route path="/AllEquations" component={(AllEquations)} />
             <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>
-            <Redirect to="/home/"/>
+            <Redirect to="/home/" />
         </Switch>
     </Layout>;
