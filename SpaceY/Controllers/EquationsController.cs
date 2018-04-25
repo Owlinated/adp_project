@@ -16,20 +16,27 @@ namespace SpaceY.Controllers
 	{
 		private EquationStore EquationStore { get; } = new EquationStore();
 
-		/// <summary>
-		/// Get list of all equations.
-		/// </summary>
-		[HttpGet]
-		public IEnumerable<RestEquation> List()
-		{
-			return EquationStore.Equations
-				.Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
-		}
+        /// <summary>
+        /// Get list of all equations.
+        /// </summary>
+        [HttpGet]
+        public IEnumerable<RestEquation> List(string all)
+        {
+            Console.WriteLine(all);
+            if (all=="true")
+            {
+                return EquationStore.AllEquations
+                .Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
+            }
+            return EquationStore.Equations
+                .Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
+        }
 
-		/// <summary>
-		/// Get equation with <paramref name="id"/>.
-		/// </summary>
-		[HttpGet("{id}")]
+
+        /// <summary>
+        /// Get equation with <paramref name="id"/>.
+        /// </summary>
+        [HttpGet("{id}")]
 		public RestEquation Get(int id)
 		{
 			return EquationStore.Equations

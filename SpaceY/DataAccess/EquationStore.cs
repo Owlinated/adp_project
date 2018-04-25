@@ -10,6 +10,7 @@ namespace SpaceY.DataAccess
 	public class EquationStore
 	{
 		public IQueryable<Equation> Equations {get; }
+        public IQueryable<Equation> AllEquations { get; }
 
 		public EquationStore()
 		{
@@ -20,6 +21,14 @@ namespace SpaceY.DataAccess
                 new Equation(2, "Sin(0)"),
                 new Equation(3, "1 + 2 + 3 + 4 + 5")
 			}.AsQueryable();
-		}
+            AllEquations = new[]
+            {
+                new Equation(0, "1 + 2"),
+                new Equation(1, "3 + 5"),
+                new Equation(2, "Sin(0)"),
+                new Equation(3, "1 + 2 + 3 + 4 + 5"),
+                new Equation(4, "7 * 7")
+            }.AsQueryable();
+        }
 	}
 }

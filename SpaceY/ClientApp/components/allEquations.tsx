@@ -17,7 +17,7 @@ export class allEquations extends React.Component<RouteComponentProps<any>, IAll
     constructor(props: RouteComponentProps<any>) {
         super(props);
         this.state = { equations: [], loading: true };
-        fetch("api/equations")
+        fetch(`api/equations?all=true`)
             .then(response => response.json() as Promise<IRestEquation[]>)
             .then(data => {
                 this.setState({ equations: data, loading: false });

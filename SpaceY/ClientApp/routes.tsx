@@ -21,13 +21,9 @@ export const routes =
             <Route path="/home/:id([0-9]*)" component={ withRouter(Home) }/>
             <Route path="/equationcreator" component={ EquationCreator } />
             <Route path="/counter" component={ Counter }/>
-<<<<<<< HEAD
             <Route path="/fetchdata" component={ FetchData }/>
-            <Route path="/dndbox" component={ Dndbox }/>
-=======
-            <Route path="/fetchdata" component={FetchData} />
+            <Route path="/dndbox" component={Dndbox} />
             <Route path="/allEquations" component={allEquations} />
->>>>>>> eqpage
             <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>
             <Redirect to="/home/"/>
         </Switch>
