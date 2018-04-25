@@ -8,7 +8,7 @@ import { Dndbox } from "./components/Dndbox";
 import { Equation } from "./components/Equation";
 import { EquationCreator } from "./components/EquationCreator";
 import { withRouter } from 'react-router-dom'
-import { allEquations } from "./components/AllEquations";
+import { AllEquations } from "./components/AllEquations";
 
 /**
  * Routing for urls on the website.
@@ -23,8 +23,8 @@ export const routes =
             <Route path="/counter" component={ Counter }/>
             <Route path="/fetchdata" component={ FetchData }/>
             <Route path="/dndbox" component={Dndbox} />
-            <Route path="/allEquations" component={allEquations} />
+            <Route path="/AllEquations" component={(AllEquations)} />
             <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>
-            <Redirect to="/home/"/>
+            <Redirect to="/home/" />
         </Switch>
     </Layout>;

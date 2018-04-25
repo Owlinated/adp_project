@@ -17,12 +17,11 @@ namespace SpaceY.Controllers
 		private EquationStore EquationStore { get; } = new EquationStore();
 
         /// <summary>
-        /// Get list of all equations.
+        /// Get list of all equations, couldn't get it to pass a boolean so it checks a string for now.
         /// </summary>
         [HttpGet]
         public IEnumerable<RestEquation> List(string all)
         {
-            Console.WriteLine(all);
             if (all=="true")
             {
                 return EquationStore.AllEquations
@@ -39,7 +38,7 @@ namespace SpaceY.Controllers
         [HttpGet("{id}")]
 		public RestEquation Get(int id)
 		{
-			return EquationStore.Equations
+			return EquationStore.AllEquations
 					.Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() })
 					.FirstOrDefault(equation => equation.Id == id)
 				?? throw new ArgumentException(nameof(id));
@@ -51,7 +50,7 @@ namespace SpaceY.Controllers
 		[HttpGet("{id}/[action]")]
 		public object Evaluate(int id)
 		{
-			return EquationStore.Equations.FirstOrDefault(equation => equation.Id == id)?.Evaluate()
+			return EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id)?.Evaluate()
 				?? throw new ArgumentException(nameof(id));
 		}
 

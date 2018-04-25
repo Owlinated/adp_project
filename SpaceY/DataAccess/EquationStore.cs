@@ -6,6 +6,7 @@ namespace SpaceY.DataAccess
 	/// <summary>
 	/// A store for equations.
 	/// In the future this might have to be persisted or stored in a database
+    /// contains a short list of equations to be shown on the homepage, and a longer with all available equations.
 	/// </summary>
 	public class EquationStore
 	{

@@ -13,7 +13,7 @@ interface IAllEquations {
 /**
  * Component for showing all equations.
  */
-export class allEquations extends React.Component<RouteComponentProps<any>, IAllEquations> {
+export class AllEquations extends React.Component<RouteComponentProps<any>, IAllEquations> {
     constructor(props: RouteComponentProps<any>) {
         super(props);
         this.state = { equations: [], loading: true };
@@ -63,9 +63,10 @@ export class allEquations extends React.Component<RouteComponentProps<any>, IAll
      * @param equation The equation to render
      */
     renderCollapsibleEquation(equation: IRestEquation) {
-        if (equation.id.toString() !== this.props.match.params.id) {
+        if (equation.id.toString() !== (String(this.props.location.pathname).slice(14))) {
             return <div className="panel-collapse collapse" aria-expanded="false" />;
         }
+        this.props.match.params.id = equation.id.toString()
         return <div className="panel-collapse collapse in" aria-expanded="true">
             <div className="panel-body">
                 <p>
