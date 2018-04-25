@@ -272,26 +272,34 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     }
 
     //--- Get the value of the current equation which should be sent to the backend
-    GetEquationValue()
-    {
+    GetEquationValue() {
         let equationtext = this.state.EquationText;
+        let openBrackets = this.state.OpenBrackets;
+
+        // Remove trailing operators
+        const trailingOperator = /([×÷\+\-XYZ]|sin|cos|\()$/;
+        while (equationtext.match(trailingOperator)) {
+            if (equationtext.match(/\($/)) openBrackets--;
+            equationtext = equationtext.replace(trailingOperator, "");
+        }
+
         if (equationtext) {
             let result = equationtext
+                // Replace tokens with interface variants
                 .replace(/×/g, "*")
                 .replace(/÷/g, "/")
-                .replace(/\+/g, "%2B")
                 .replace(/X/g, "var(X)")
                 .replace(/Y/g, "var(Y)")
                 .replace(/Z/g, "var(Z)")
                 .replace(/sin\(/g, "Sin\(")
                 .replace(/cos\(/g, "Cos\(");
-            for (let i = 0; i < this.state.OpenBrackets; ++i)
+            for (let i = 0; i < openBrackets; ++i)
                 result += ")";
             return result;
         } else {
             return "";
         }
-           
+
     }
 
     //-- Called on every change to fetch data from server
