@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using SpaceY.Core;
 
 namespace SpaceY.DataAccess
@@ -10,42 +11,45 @@ namespace SpaceY.DataAccess
     /// </summary>
     public class EquationStore
     {
+        private readonly List<Equation> equations = new List<Equation>();
+
+        private int counter;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EquationStore"/> class.
         /// Loads a fixed set of default equations.
         /// </summary>
         public EquationStore()
         {
-            Equations = new[]
-            {
-                new Equation(0, "1 + 2"),
-                new Equation(1, "3 + 5"),
-                new Equation(2, "Sin(0)"),
-                new Equation(3, "1 + 2 + 3 + 4 + 5")
-            }.AsQueryable();
-            AllEquations = new[]
-            {
-                new Equation(0, "1 + 2"),
-                new Equation(1, "3 + 5"),
-                new Equation(2, "Sin(0)"),
-                new Equation(3, "1 + 2 + 3 + 4 + 5"),
-                new Equation(4, "7 * 7"),
-                new Equation(5, "1 + 2"),
-                new Equation(6, "3 + 5"),
-                new Equation(7, "Sin(0)"),
-                new Equation(8, "1 + 2 + 3 + 4 + 5"),
-                new Equation(9, "7 * 7")
-            }.AsQueryable();
+            AddEquation(new Equation("1 + 2"));
+            AddEquation(new Equation("3 + 5"));
+            AddEquation(new Equation("Sin(0)"));
+            AddEquation(new Equation("1 + 2 + 3 + 4 + 5"));
+            AddEquation(new Equation("7 * 7"));
+            AddEquation(new Equation("1 + 2"));
+            AddEquation(new Equation("3 + 5"));
+            AddEquation(new Equation("Sin(0)"));
+            AddEquation(new Equation("1 + 2 + 3 + 4 + 5"));
+            AddEquation(new Equation("7 * 7"));
         }
 
         /// <summary>
         /// Gets list of the most used stored equations
         /// </summary>
-        public IQueryable<Equation> Equations { get; }
+        public IQueryable<Equation> Equations => equations.Take(4).AsQueryable();
 
         /// <summary>
         /// Gets list of all stored equations
         /// </summary>
-        public IQueryable<Equation> AllEquations { get; }
+        public IQueryable<Equation> AllEquations => equations.AsQueryable();
+
+        /// <summary>
+        /// Adds a new equation to the store
+        /// </summary>
+        public void AddEquation(Equation equation)
+        {
+            equation.Id = counter++;
+            equations.Add(equation);
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace SpaceY.Tests
         [Fact]
         public void Test1()
         {
-            var e1 = new Equation(id: 0, serialized: "1 + 1");
+            var e1 = new Equation("1 + 1");
             Assert.Equal(expected: 2, actual: e1.Evaluate());
         }
 
@@ -24,7 +24,7 @@ namespace SpaceY.Tests
         [Fact]
         public void Test2()
         {
-            var e2 = new Equation(id: 1, serialized: "-1 + 1");
+            var e2 = new Equation("-1 + 1");
             Assert.Equal(expected: 0, actual: e2.Evaluate());
         }
     }

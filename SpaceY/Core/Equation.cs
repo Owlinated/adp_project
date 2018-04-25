@@ -15,29 +15,27 @@ namespace SpaceY.Core
         /// Initializes a new instance of the <see cref="Equation"/> class.
         /// Parses the expression from the serialized version.
         /// </summary>
-        public Equation(int id, string serialized, IList<RestEquationParam> parameters = null)
+        public Equation(string serialized, IList<RestEquationParam> parameters = null)
         {
-            // This only creates a dummy equation
-            Id = id;
             EquationString = serialized;
             Parameters = parameters ?? new List<RestEquationParam>();
             Expression = new Expression(serialized);
         }
 
         /// <summary>
-        /// Gets the equation's identifier.
+        /// Gets or sets the equation's identifier.
         /// </summary>
-        public int Id { get; }
+        public int Id { get; set; }
 
         /// <summary>
-        /// Gets the equation's string representation.
+        /// Gets or sets the equation's string representation.
         /// </summary>
-        public string EquationString { get; }
+        public string EquationString { get; set; }
 
         /// <summary>
-        /// Gets the parameters used for evaluation.
+        /// Gets or sets the parameters used for evaluation.
         /// </summary>
-        public IList<RestEquationParam> Parameters { get; }
+        public IList<RestEquationParam> Parameters { get; set; }
 
         /// <summary>
         /// Gets the expression which describers the equation.
@@ -47,20 +45,20 @@ namespace SpaceY.Core
         /// <summary>
         /// Create an equation from the interface type
         /// </summary>
-        public static Equation Create(int id, RestEquation equation)
+        public static Equation Create(RestEquation equation)
         {
-            return new Equation(id, equation.Equation, equation.Parameters);
+            return new Equation(equation.Equation, equation.Parameters);
         }
 
         /// <summary>
         /// Determine the equations value
         /// </summary>
-        public decimal Evaluate(decimal[] parameterValues = null)
+        public double Evaluate(double[] parameterValues = null)
         {
             try
             {
                 Expression.EvaluateFunction += EvaluateFunction;
-                return Convert.ToDecimal(Expression.Evaluate());
+                return Convert.ToDouble(Expression.Evaluate());
             }
             finally
             {
@@ -79,10 +77,11 @@ namespace SpaceY.Core
 
                 if (parameterValues?.Length > index)
                 {
-                    args.Result = parameterValues[index];
+                    args.Result = Convert.ToDouble(parameterValues[index]);
+                    return;
                 }
 
-                args.Result = param.Default;
+                args.Result = Convert.ToDouble(param.Default);
             }
         }
 
