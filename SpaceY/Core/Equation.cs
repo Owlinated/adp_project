@@ -2,43 +2,53 @@
 
 namespace SpaceY.Core
 {
-	/// <summary>
-	/// Container for a mathematical expression.
-	/// Parses, evaluates, and serializes equations.
-	/// </summary>
-	public class Equation
-	{
-		public int Id { get; }
-        public string equationString { get; }
-        public Expression e { get; }
-
-		/// <summary>
-		/// Create an equation by parsing its <paramref name="serialized"/> form.
-		/// </summary>
-		public Equation(int id, string serialized)
-		{
-
-			// This only creates a dummy equation
+    /// <summary>
+    /// Container for a mathematical expression.
+    /// Parses, evaluates, and serializes equations.
+    /// </summary>
+    public class Equation
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Equation"/> class.
+        /// Parses the expression from the serialized version.
+        /// </summary>
+        public Equation(int id, string serialized)
+        {
+            // This only creates a dummy equation
             Id = id;
-            equationString = serialized;
-            e = new Expression(serialized);
+            EquationString = serialized;
+            Expression = new Expression(serialized);
+        }
 
-		}
+        /// <summary>
+        /// Gets the equation's identifier.
+        /// </summary>
+        public int Id { get; }
 
-		/// <summary>
-		/// Determine the equations value
-		/// </summary>
-		public object Evaluate()
-		{
-			return e.Evaluate();
-		}
+        /// <summary>
+        /// Gets the equation's string representation.
+        /// </summary>
+        public string EquationString { get; }
 
-		/// <summary>
-		/// Convert the contained equation into a string.
-		/// </summary>
-		public string Serialize()
-		{
-			return "f() = " + equationString;
-		}
-	}
+        /// <summary>
+        /// Gets the expression which describers the equation.
+        /// </summary>
+        public Expression Expression { get; }
+
+        /// <summary>
+        /// Determine the equations value
+        /// </summary>
+        public object Evaluate()
+        {
+            return Expression.Evaluate();
+        }
+
+        /// <summary>
+        /// Convert the contained equation into a string.
+        /// </summary>
+        public string Serialize()
+        {
+            return "f() = " + EquationString;
+        }
+    }
 }

@@ -2,8 +2,6 @@ import * as React from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
-import { FetchData } from "./components/FetchData";
-import { Counter } from "./components/Counter";
 import { Dndbox } from "./components/Dndbox";
 import { Equation } from "./components/Equation";
 import { EquationCreator } from "./components/EquationCreator";
@@ -19,8 +17,6 @@ export const routes =
         <Switch>
             <Route path="/home/:id([0-9]*)" component={ withRouter(Home) }/>
             <Route path="/equationcreator" component={ EquationCreator } />
-            <Route path="/counter" component={ Counter }/>
-            <Route path="/fetchdata" component={ FetchData }/>
             <Route path="/dndbox" component={ Dndbox }/>
             <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>
             <Redirect to="/home/"/>
