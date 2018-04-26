@@ -15,7 +15,16 @@ namespace SpaceY.Controllers
     [Route("api/[controller]")]
     public class EquationsController : Controller
     {
-        private EquationStore EquationStore { get; } = new EquationStore();
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EquationsController"/> class.
+        /// </summary>
+        /// <param name="equationStore">Store of equation from DI</param>
+        public EquationsController(EquationStore equationStore)
+        {
+            EquationStore = equationStore;
+        }
+
+        private EquationStore EquationStore { get; }
 
         /// <summary>
         /// Creates a new equation.
@@ -27,7 +36,7 @@ namespace SpaceY.Controllers
             EquationStore.AddEquation(parsed);
 
             equation.Id = parsed.Id;
-            return Created(new Uri($"/equations/{parsed.Id}"), equation);
+            return Created($"/equations/{parsed.Id}", equation);
         }
 
         /// <summary>
