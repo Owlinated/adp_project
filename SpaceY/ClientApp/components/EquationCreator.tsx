@@ -158,7 +158,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         });
 
         //--- We should reset history as well
-        this.StatesHistory = [this.state]
+        this.StatesHistory = [this.state];
     }
 
     //--- Function to Reset the local NumberStatus variable 
@@ -286,7 +286,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         let openBrackets = this.state.OpenBrackets;
 
         // Remove trailing operators
-        const trailingOperator = /([×÷\+\-]|sin|cos|\()$/;
+        const trailingOperator = /([×÷\+\-\(\.]|sin|cos)$/;
         while (equationtext.match(trailingOperator)) {
             if (equationtext.match(/\($/)) openBrackets--;
             equationtext = equationtext.replace(trailingOperator, "");
@@ -322,7 +322,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     //-- Called on every change to fetch data from server
     componentDidUpdate(prevProps: any, prevState: ICreatorState) {
         if (prevState.EquationText !== this.state.EquationText || prevState.DefaultValues !== this.state.DefaultValues) {
-            // Post current equation to server
+            // Post current equation to evaluator
             fetch("api/Equations/Evaluate",
                     {
                         method: "POST",
@@ -344,8 +344,27 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         }
     }
 
+    SaveEquation() {
+        // Post current equation
+        fetch("api/Equations/",
+                {
+                    method: "POST",
+                    headers: {
+                        'Accept': "application/json",
+                        'Content-Type': "application/json",
+                    },
+                    body: JSON.stringify(this.GetRestEquation())
+                })
+            // Interpret answer as result, and update state
+            .then(response => {
+                if (response.status === 201) {
+                    this.props.history.push(response.headers.get("Location") as any);
+                }
+            });
+    }
 
-    UpdateDefaultValues(i: number, val: any) 
+
+    UpdateDefaultValues(i: number, val: any)
     {
         if (i === 0) this.DefaultValues[0] = val.target.value;
         if (i === 1) this.DefaultValues[1] = val.target.value;
@@ -388,7 +407,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                         <div>{this.generateButtons(12, 16)}</div>
                         <div>{this.generateButtons(16, 20)}</div>
                         <div>{this.generateButtons(20, this.AllButtons.length)}</div>
-                        <div><button type="button" className="btn btn-success creatorsavebarbutton" disabled={(this.state.EquationText === "") || (this.state.OpenBrackets > 0)}>Save Equation</button></div>
+                        <div><button type="button" className="btn btn-success creatorsavebarbutton" disabled={(this.state.EquationText === "") || (this.state.OpenBrackets > 0)} onClick={() => this.SaveEquation()}>Save Equation</button></div>
                     </div>
                 </div>
             </div>

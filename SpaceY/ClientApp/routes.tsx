@@ -17,7 +17,7 @@ export const routes =
     <Layout>
         <Switch>
             <Route path="/home/:id([0-9]*)" component={ withRouter(Home) }/>
-            <Route path="/equationcreator" component={ EquationCreator } />
+            <Route path="/equationcreator" component={ withRouter(EquationCreator) } />
             <Route path="/dndbox" component={ Dndbox }/>
             <Route path="/AllEquations" component={ AllEquations } />
             <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>

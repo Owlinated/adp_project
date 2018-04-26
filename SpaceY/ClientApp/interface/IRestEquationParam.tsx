@@ -2,5 +2,4 @@
     name: string;
     description: string;
     default: number;
-    value: number;
 }

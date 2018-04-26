@@ -18,11 +18,6 @@
         /// <summary>
         /// Gets or sets the default value of a parameter.
         /// </summary>
-        public decimal Default { get; set; }
-
-        /// <summary>
-        /// Gets or sets the actual value of parameter.
-        /// </summary>
-        public decimal? Value { get; set; }
+        public double Default { get; set; }
     }
 }

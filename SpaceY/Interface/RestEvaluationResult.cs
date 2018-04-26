@@ -13,6 +13,6 @@ namespace SpaceY.Interface
         /// <summary>
         /// Gets or sets the value to which the equation was evaluated.
         /// </summary>
-        public decimal? Value { get; set; }
+        public double? Value { get; set; }
     }
 }

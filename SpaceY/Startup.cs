@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SpaceY.DataAccess;
 
 namespace SpaceY
 {
@@ -30,6 +31,7 @@ namespace SpaceY
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSingleton<EquationStore>();
         }
 
         /// <summary>
