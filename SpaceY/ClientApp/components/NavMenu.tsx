@@ -22,7 +22,7 @@ export class NavMenu extends React.Component<{}, {}> {
                        <div className="navbar-collapse collapse">
                            <ul className="nav navbar-nav">
                                <li>
-                                   <NavLink to={ "/home" } activeClassName="active">
+                                   <NavLink to={ "/home/" } activeClassName="active">
                                        <span className="glyphicon glyphicon-sunglasses"></span> Home
                                    </NavLink>
                                </li>
@@ -37,7 +37,7 @@ export class NavMenu extends React.Component<{}, {}> {
                                    </NavLink>
                                </li>
                                 <li>
-                                    <NavLink to={"/AllEquations"} activeClassName="active">
+                                    <NavLink to={"/AllEquations/"} activeClassName="active">
                                         <span className="glyphicon glyphicon-th-list"></span> All Equations
                                    </NavLink>
                         </li>
