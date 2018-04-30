@@ -1,10 +1,10 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { IRestEquation } from "../interface/IRestEquation";
+import { IRestNestedEquation } from "../interface/IRestNestedEquation";
 
 interface IEquationState {
     loading: boolean;
-    equation: IRestEquation | undefined;
+    equation: IRestNestedEquation | undefined;
     result: number | undefined;
 }
 
@@ -35,7 +35,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
     fetchEquation() {
         this.setState({ loading: true, result: undefined });
         fetch(`api/Equations/${this.props.match.params.id}`)
-            .then(response => response.json() as Promise<IRestEquation>)
+            .then(response => response.json() as Promise<IRestNestedEquation>)
             .then(data => {
                 this.setState({ equation: data, loading: false });
             });
@@ -60,8 +60,8 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
      * Render the equation. Right now this simply displays it as text.
      * @param equation The equation to render
      */
-    renderEquation(equation: IRestEquation) {
-        return <p>{equation.equation}</p>;
+    renderEquation(equation: IRestNestedEquation) {
+        return <p>{equation.main.equation}</p>;
     }
 
     /**

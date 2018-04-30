@@ -32,7 +32,7 @@ namespace SpaceY.Controllers
         [HttpPost]
         public CreatedResult Create([FromBody]RestEquation equation)
         {
-            var parsed = Equation.Create(equation);
+            var parsed = EquationStore.CreateEquation(equation);
             EquationStore.AddEquation(parsed);
 
             equation.Id = parsed.Id;
@@ -43,35 +43,29 @@ namespace SpaceY.Controllers
         /// Get list of all equations, couldn't get it to pass a boolean so it checks a string for now.
         /// </summary>
         [HttpGet]
-        public IEnumerable<RestEquation> List(string all)
+        public IEnumerable<RestNestedEquation> List(bool all)
         {
-            if (all == "true")
-            {
-                return EquationStore.AllEquations
-                .Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
-            }
-
-            return EquationStore.Equations
-                .Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() });
+            return all
+                ? EquationStore.AllEquations.AsEnumerable().Select(ConvertToNested)
+                : EquationStore.Equations.AsEnumerable().Select(ConvertToNested);
         }
 
         /// <summary>
         /// Get equation with <paramref name="id"/>.
         /// </summary>
         [HttpGet("{id}")]
-        public RestEquation Get(int id)
+        public RestNestedEquation Get(int id)
         {
-            return EquationStore.AllEquations
-                    .Select(equation => new RestEquation { Id = equation.Id, Equation = equation.Serialize() })
-                    .FirstOrDefault(equation => equation.Id == id)
-                ?? throw new ArgumentException(nameof(id));
+            var result = EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id) ??
+                         throw new ArgumentException(nameof(id));
+            return ConvertToNested(result);
         }
 
         /// <summary>
         /// Get the value of equation with <paramref name="id"/>.
         /// </summary>
         [HttpGet("{id}/[action]")]
-        public object Evaluate(int id, double[] parameterValues)
+        public object Evaluate(int id, Dictionary<int, Dictionary<int, double>> parameterValues)
         {
             return EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id)?.Evaluate(parameterValues)
                 ?? throw new ArgumentException(nameof(id));
@@ -81,7 +75,7 @@ namespace SpaceY.Controllers
         /// Compute the value of an equation with the specified or default parameters.
         /// </summary>
         [HttpPost("[action]")]
-        public object Evaluate([FromBody]RestEquation equation, double[] parameterValues)
+        public object Evaluate([FromBody]RestEquation equation, Dictionary<int, Dictionary<int, double>> parameterValues)
         {
             if (string.IsNullOrWhiteSpace(equation?.Equation))
             {
@@ -90,13 +84,32 @@ namespace SpaceY.Controllers
 
             try
             {
-                var result = Equation.Create(equation).Evaluate(parameterValues);
+                var result = EquationStore.CreateEquation(equation).Evaluate(parameterValues);
                 return new RestEvaluationResult { Success = true, Value = result };
             }
             catch
             {
                 return new RestEvaluationResult { Success = false };
             }
+        }
+
+        private static RestNestedEquation ConvertToNested(Equation equation)
+        {
+            return new RestNestedEquation
+            {
+                Main = ConvertToSimple(equation),
+                References = equation.References.Select(ConvertToSimple).ToList()
+            };
+        }
+
+        private static RestEquation ConvertToSimple(Equation equation)
+        {
+            return new RestEquation
+            {
+                Id = equation.Id,
+                Equation = equation.Serialize(),
+                Parameters = equation.Parameters
+            };
         }
     }
 }

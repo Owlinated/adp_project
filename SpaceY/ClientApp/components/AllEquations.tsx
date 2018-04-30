@@ -2,11 +2,11 @@
 import { RouteComponentProps } from "react-router";
 import "isomorphic-fetch";
 import { NavLink } from "react-router-dom";
-import { IRestEquation } from "../interface/IRestEquation";
+import { IRestNestedEquation } from "../interface/IRestNestedEquation";
 import { Equation } from "./Equation";
 
 interface IAllEquations {
-    equations: IRestEquation[];
+    equations: IRestNestedEquation[];
     loading: boolean;
 }
 
@@ -18,7 +18,7 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
         super(props);
         this.state = { equations: [], loading: true };
         fetch(`api/equations?all=true`)
-            .then(response => response.json() as Promise<IRestEquation[]>)
+            .then(response => response.json() as Promise<IRestNestedEquation[]>)
             .then(data => {
                 this.setState({ equations: data, loading: false });
             });
@@ -41,16 +41,16 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
      * Add links for expanding and collapsing each equation.
      * @param equations The equations to render
      */
-    renderEquations(equations: IRestEquation[]) {
+    renderEquations(equations: IRestNestedEquation[]) {
         return equations.map(equation =>
             <div className="panel panel-default">
                 <div className="panel-heading">
                     <NavLink
-                        to={equation.id.toString() === this.props.match.params.id
+                        to={equation.main.id.toString() === this.props.match.params.id
                             ? "/AllEquations"
-                            : `/AllEquations/${equation.id}`}
+                            : `/AllEquations/${equation.main.id}`}
                         activeClassName="active">
-                        {equation.equation}
+                        {equation.main.equation}
                     </NavLink>
                 </div>
                 {this.renderCollapsibleEquation(equation)}
@@ -62,15 +62,15 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
      * Only render it, if it is selected.
      * @param equation The equation to render
      */
-    renderCollapsibleEquation(equation: IRestEquation) {
-        if (equation.id.toString() !== this.props.match.params.id) {
+    renderCollapsibleEquation(equation: IRestNestedEquation) {
+        if (equation.main.id.toString() !== this.props.match.params.id) {
             return <div className="panel-collapse collapse" aria-expanded="false" />;
         }
-        this.props.match.params.id = equation.id.toString()
+        this.props.match.params.id = equation.main.id.toString();
         return <div className="panel-collapse collapse in" aria-expanded="true">
             <div className="panel-body">
                 <p>
-                    <NavLink to={"/equations/" + equation.id} activeClassName="active">
+                    <NavLink to={`/equations/${equation.main.id}`} activeClassName="active">
                         Go to equation
                            </NavLink>
                 </p>

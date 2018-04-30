@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using SpaceY.Core;
+using SpaceY.Interface;
 
 namespace SpaceY.DataAccess
 {
@@ -44,7 +46,28 @@ namespace SpaceY.DataAccess
         public IQueryable<Equation> AllEquations => equations.AsQueryable();
 
         /// <summary>
-        /// Adds a new equation to the store
+        /// Create an equation from the interface type.
+        /// Does not save the equation.
+        /// </summary>
+        public Equation CreateEquation(RestEquation restEquation)
+        {
+            // Define regex for looking up ref(0) expressions
+            var referenceRegEx = new Regex(@"ref\((\d+)\)", RegexOptions.IgnoreCase);
+            var referenceMatches = referenceRegEx.Matches(restEquation.Equation);
+
+            // Foreach match, find its index and look that up.
+            var referenceIds = referenceMatches.Select(refMatch => int.Parse(refMatch.Captures.First().Value));
+            var references = referenceIds
+                            .Select(refId => AllEquations.FirstOrDefault(equation => equation.Id == refId))
+                            .Where(reference => reference != null)
+                            .ToList();
+
+            // Create a new equation using the collected references and parameters
+            return new Equation(restEquation.Equation, restEquation.Parameters, references);
+        }
+
+        /// <summary>
+        /// Adds a new equation to the store.
         /// </summary>
         public void AddEquation(Equation equation)
         {
