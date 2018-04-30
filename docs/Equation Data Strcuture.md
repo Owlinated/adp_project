@@ -20,11 +20,40 @@ We are going to use this structure to send equations between client and server.
 }
 ```
 
+For equations which contain other equations we use this structure which unwraps recursive references into one flat list, where "Equation Data Structure" is the structure described above.
+
+```javascript
+{
+    "main": "Equation Data Structure"
+    "references": [
+        "Equation Data Structure",
+        "Equation Data Structure"
+    ]
+}
+```
+
+Parameters are sent as key value pairs, where the key is the parameters name, and the value its current value.
+For equations that reference other these key value pairs are grouped by equation ids. Note that parameters are only valid for their equation; the two "x" are different parameters for different equations.
+
+```javascript
+{
+    0: {
+        "x": undefined,
+        "g": 9.81
+    },
+    3: {
+        "x": 3
+    }
+}
+```
+
 For the equation part we allow the following tokens:
 
- - operations: + - * /
- - expressions: Sin() Cos()
- - features: ( )
- - variables: Var(0)
+ - Operations: + - * /
+ - Expressions: Sin() Cos()
+ - Features: ( )
+ - Variables: Var(0)
+ - Equation references: Ref(0)
 
 Variables are indexed by their position in the list.
+References refer to equation ids.
