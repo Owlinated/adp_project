@@ -75,7 +75,7 @@ namespace SpaceY.Controllers
         /// Compute the value of an equation with the specified or default parameters.
         /// </summary>
         [HttpPost("[action]")]
-        public object Evaluate([FromBody]RestEquation equation, Dictionary<int, Dictionary<int, double>> parameterValues)
+        public object Evaluate([FromBody]RestEquation equation)
         {
             if (string.IsNullOrWhiteSpace(equation?.Equation))
             {
@@ -84,7 +84,7 @@ namespace SpaceY.Controllers
 
             try
             {
-                var result = EquationStore.CreateEquation(equation).Evaluate(parameterValues);
+                var result = EquationStore.CreateEquation(equation).Evaluate();
                 return new RestEvaluationResult { Success = true, Value = result };
             }
             catch

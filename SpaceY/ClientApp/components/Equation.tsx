@@ -30,6 +30,10 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
         if (prevProps.match.params.id !== this.props.match.params.id) {
             this.fetchEquation();
         }
+        if (JSON.stringify(prevState.parameters) !== JSON.stringify(this.state.parameters) ||
+            prevState.equation !== this.state.equation) {
+            this.evaluateEquation();
+        }
     }
 
     /**
@@ -41,6 +45,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
             .then(response => response.json() as Promise<IRestNestedEquation>)
             .then(data => {
                 this.setState({ equation: data, loading: false });
+                this.evaluateEquation();
             });
     }
 
@@ -58,12 +63,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
         return <div>
             {this.renderReferences(equation.references)}
             <h2>Equation</h2>
-            <p>Id: {this.props.match.params.id} </p>
             {this.renderEquation(equation.main)}
-            <button onClick={() => { this.evaluateEquation() }}>Evaluate</button>
-            <div>
-                <input type="text" readOnly value={this.state.result} />
-            </div>
         </div>;
     }
 
@@ -110,8 +110,9 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
      * @param equation The equation to render
      */
     renderEquation(equation: IRestEquation) {
+        const isMain = equation === (this.state.equation as any).main;
         return <div>
-                   <p>{equation.equation}</p>
+                   <p>{isMain ? `${equation.equation} = ${this.state.result}` : equation.equation}</p>
                    {equation.parameters.map((parameter, index) => this.renderParameter(equation, parameter, index))}
                </div>;
     }
@@ -123,16 +124,10 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
      * @param index The parameters index within the equation.
      */
     renderParameter(equation: IRestEquation, parameter: IRestEquationParam, index: number) {
-        return <div className="input-group mb-3">
-                   <div className="input-group-prepend">
-                       <span className="input-group-text" id="basic-addon1">
-                           {parameter.description} ({parameter.name})
-                       </span>
-                   </div>
-                   <input type="text" className="form-control" placeholder={parameter.default.toString()}
-                          aria-label="Username" aria-describedby="basic-addon1"
-                          onChange={(value: React.ChangeEvent<HTMLInputElement>) =>
-                    this.updateParam(equation, index, value)}/>
+        return <div className="input-group">
+                   <span className="input-group-addon">{parameter.description} ({parameter.name})</span>
+                   <input type="text" className="form-control" placeholder={`${parameter.default}`}
+                          onChange={(value: React.ChangeEvent<HTMLInputElement>) => this.updateParam(equation, index, value)}/>
                </div>;
     }
 
@@ -145,6 +140,8 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
     updateParam(equation: IRestEquation, index: number, value: React.ChangeEvent<HTMLInputElement>) {
         const newValue = Number(value.target.value);
         this.setState((prevState: IEquationState) => {
+            // We are not allowed to change the previous state by reference, so we clone it.
+            prevState = JSON.parse(JSON.stringify(prevState));
             if (!prevState.parameters[equation.id]) {
                 prevState.parameters[equation.id] = {};
             }
