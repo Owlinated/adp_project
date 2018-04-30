@@ -2,6 +2,7 @@
 import { RouteComponentProps } from "react-router";
 import { IEvaluationResult } from "../interface/IEvaluationResult";
 import { IRestEquation } from "../interface/IRestEquation";
+import { IRestNestedEquation } from "../interface/IRestNestedEquation";
 import { IRestEquationParam } from "../interface/IRestEquationParam";
 
 //--- The creator interface which defines the data structure of our component  

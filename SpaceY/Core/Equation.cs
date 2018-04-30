@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NCalc;
 using SpaceY.Interface;
 
@@ -15,10 +16,11 @@ namespace SpaceY.Core
         /// Initializes a new instance of the <see cref="Equation"/> class.
         /// Parses the expression from the serialized version.
         /// </summary>
-        public Equation(string serialized, IList<RestEquationParam> parameters = null)
+        public Equation(string serialized, IList<RestEquationParam> parameters = null, IList<Equation> references = null)
         {
             EquationString = serialized;
             Parameters = parameters ?? new List<RestEquationParam>();
+            References = references ?? new List<Equation>();
             Expression = new Expression(serialized);
         }
 
@@ -43,17 +45,14 @@ namespace SpaceY.Core
         public Expression Expression { get; }
 
         /// <summary>
-        /// Create an equation from the interface type
+        /// Gets all referenced equations.
         /// </summary>
-        public static Equation Create(RestEquation equation)
-        {
-            return new Equation(equation.Equation, equation.Parameters);
-        }
+        public IList<Equation> References { get; }
 
         /// <summary>
         /// Determine the equations value
         /// </summary>
-        public double Evaluate(double[] parameterValues = null)
+        public double Evaluate(Dictionary<int, Dictionary<int, double>> parameterValues = null)
         {
             try
             {
@@ -67,21 +66,41 @@ namespace SpaceY.Core
 
             void EvaluateFunction(string name, FunctionArgs args)
             {
-                if (name != "var")
+                switch (name.ToLower())
                 {
-                    return;
+                    case "var":
+                        EvaluateVar(args);
+                        break;
+                    case "ref":
+                        EvaluateRef(args);
+                        break;
                 }
+            }
 
+            void EvaluateVar(FunctionArgs args)
+            {
                 var index = (int)args.Parameters[0].Evaluate();
                 var param = Parameters[index];
 
-                if (parameterValues?.Length > index)
+                if (parameterValues != null &&
+                    parameterValues.TryGetValue(Id, out var parameters) &&
+                    parameters.TryGetValue(index, out var result))
                 {
-                    args.Result = Convert.ToDouble(parameterValues[index]);
+                    args.Result = result;
                     return;
                 }
 
                 args.Result = Convert.ToDouble(param.Default);
+            }
+
+            void EvaluateRef(FunctionArgs args)
+            {
+                var index = (int)args.Parameters[0].Evaluate();
+                var reference = References.FirstOrDefault(equation => equation.Id == index);
+                if (reference != null)
+                {
+                    args.Result = reference.Evaluate(parameterValues);
+                }
             }
         }
 
@@ -90,7 +109,7 @@ namespace SpaceY.Core
         /// </summary>
         public string Serialize()
         {
-            return "f() = " + EquationString;
+            return EquationString;
         }
     }
 }
