@@ -32,7 +32,22 @@ namespace SpaceY.DataAccess
             AddEquation(new Equation("3 + 5"));
             AddEquation(new Equation("Sin(0)"));
             AddEquation(new Equation("1 + 2 + 3 + 4 + 5"));
-            AddEquation(new Equation("7 * 7"));
+            var equation1 = new Equation("7 * 7");
+            AddEquation(equation1);
+
+            var parameters2 = new[] { new RestEquationParam { Default = 1.0, Description = "dummy", Name = "d" } };
+            var equation2 = new Equation(
+                serialized: $"Ref({equation1.Id}) * Var(0) + 1",
+                parameters: parameters2,
+                references: new[] { equation1 });
+            AddEquation(equation2);
+
+            var parameters3 = new[] { new RestEquationParam { Default = 1.0, Description = "dummy", Name = "d" } };
+            var equation3 = new Equation(
+                serialized: $"Ref({equation1.Id}) + Ref({equation2.Id}) + 3.1415",
+                parameters: parameters2,
+                references: new[] { equation1, equation2 });
+            AddEquation(equation3);
         }
 
         /// <summary>

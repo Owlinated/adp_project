@@ -64,8 +64,8 @@ namespace SpaceY.Controllers
         /// <summary>
         /// Get the value of equation with <paramref name="id"/>.
         /// </summary>
-        [HttpGet("{id}/[action]")]
-        public object Evaluate(int id, Dictionary<int, Dictionary<int, double>> parameterValues)
+        [HttpPost("{id}/[action]")]
+        public object Evaluate(int id, [FromBody]Dictionary<int, Dictionary<int, double>> parameterValues)
         {
             return EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id)?.Evaluate(parameterValues)
                 ?? throw new ArgumentException(nameof(id));
