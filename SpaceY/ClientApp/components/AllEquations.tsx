@@ -74,6 +74,11 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
                         Go to equation
                            </NavLink>
                 </p>
+                <p>
+                    <NavLink to={`/equationcreator/${equation.main.id}`} activeClassName="active">
+                        Update this equation
+                           </NavLink>
+                </p>
                 <Equation match={this.props.match}
                     location={this.props.location}
                     history={this.props.history}
