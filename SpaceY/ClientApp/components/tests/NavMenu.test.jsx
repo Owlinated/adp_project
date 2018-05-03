@@ -1,7 +1,22 @@
-import * as React from 'react';
+import React from 'react';
 import { shallow } from 'enzyme';
+import Enzyme from 'enzyme';
 import { NavMenu } from '../NavMenu';
 
-it('1 equals 1', () => {
-    expect(1 == 1);
-});
+import Adapter from 'enzyme-adapter-react-16';
+
+Enzyme.configure({ adapter: new Adapter() });
+
+describe('Navigation Menu Component', () => {
+    it('renders without crashing.', () => {
+        expect(shallow(<NavMenu />).exists(<div className="navbar navbar-inverse"></div>)).toBe(true)
+    });
+
+    it('creates at least three links.', () => {
+        expect(shallow(<NavMenu />).find('NavLink').length).toBeGreaterThanOrEqual(3);
+    });
+
+    it('the first link leads to the homepage', () => {
+
+    })
+})
