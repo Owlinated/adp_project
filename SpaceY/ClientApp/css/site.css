@@ -19,9 +19,77 @@
     z-index: 1;
 }
 
+/* Equation Creator Styles */
+
+.creatortextarea {
+    resize: none;
+    font-size: 18px;
+}
+
+.creatordefaultvalue {
+    width: 95%;
+    margin-right: 5%;
+}
+
+.creatorcontainerdiv {
+    width: 100%;
+    border-width: 2px;
+    border-color: black;
+    margin-top: 25px;
+}
+
+.creatorfirstdiv {
+    float: left;
+    width: 60%;
+}
+
+.creatorseconddiv {
+    float: right;
+    width: 35%;
+}
+
+.creatorbutton {
+    background-color: #dcfee1;
+    border-color: black;
+    border-width: 1px;
+    color: black;
+    font-size: 1.4em;
+    padding: 9px 10px;
+    border-radius: 4px;
+    transition-duration: 0.3s;
+    margin: 3px;
+    width: 23%;
+}
+
+.creatorbutton:hover {
+    background-color: white; 
+}
+
+.creatorbutton:disabled, creatorbutton[disabled] {
+    background-color: #ffdbdb;
+    cursor: not-allowed;
+}
+
+.creatorsavebarbutton {
+    width: 100%;
+    margin-top: 15px;
+}
+
+
 @media (max-width: 767px) {
     /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
     body { padding-top: 50px; }
+
+    .creatorfirstdiv {
+        float: unset;
+        width: 100%;
+    }
+
+    .creatorseconddiv {
+        float: unset;
+        width: 100%;
+        margin-top: 25px;
+    }
 }
 
 @media (min-width: 768px) {

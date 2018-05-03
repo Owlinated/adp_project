@@ -2,11 +2,11 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import "isomorphic-fetch";
 import { NavLink } from "react-router-dom";
-import { IRestEquation } from "../types/IRestEquation";
+import { IRestNestedEquation } from "../interface/IRestNestedEquation";
 import { Equation } from "./Equation";
 
 interface IHomeState {
-    equations: IRestEquation[];
+    equations: IRestNestedEquation[];
     loading: boolean;
 }
 
@@ -18,8 +18,8 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
     constructor(props: RouteComponentProps<any>) {
         super(props);
         this.state = { equations: [], loading: true };
-        fetch("api/equations")
-            .then(response => response.json() as Promise<IRestEquation[]>)
+        fetch(`api/equations?all=false`)
+            .then(response => response.json() as Promise<IRestNestedEquation[]>)
             .then(data => {
                 this.setState({ equations: data, loading: false });
             });
@@ -42,16 +42,16 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
      * Add links for expanding and collapsing each equation.
      * @param equations The equations to render
      */
-    renderEquations(equations: IRestEquation[]) {
+    renderEquations(equations: IRestNestedEquation[]) {
         return equations.map(equation =>
             <div className="panel panel-default">
                 <div className="panel-heading">
                     <NavLink
-                        to={equation.id.toString() === this.props.match.params.id
+                        to={equation.main.id.toString() === this.props.match.params.id
                             ? "/home"
-                            : `/home/${equation.id}`}
+                            : `/home/${equation.main.id}`}
                         activeClassName="active">
-                        {equation.equation}
+                        {equation.main.equation}
                     </NavLink>
                 </div>
                 {this.renderCollapsibleEquation(equation)}
@@ -63,14 +63,14 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
      * Only render it, if it is selected.
      * @param equation The equation to render
      */
-    renderCollapsibleEquation(equation: IRestEquation) {
-        if (equation.id.toString() !== this.props.match.params.id) {
+    renderCollapsibleEquation(equation: IRestNestedEquation) {
+        if (equation.main.id.toString() !== this.props.match.params.id) {
             return <div className="panel-collapse collapse" aria-expanded="false"/>;
         }
         return <div className="panel-collapse collapse in" aria-expanded="true">
                    <div className="panel-body">
                        <p>
-                           <NavLink to={"/equations/" + equation.id} activeClassName="active">
+                           <NavLink to={`/equations/${equation.main.id}`} activeClassName="active">
                                Go to equation
                            </NavLink>
                        </p>

@@ -14,6 +14,7 @@ export class NavMenu extends React.Component<{}, {}> {
                                <span className="icon-bar"></span>
                                <span className="icon-bar"></span>
                                <span className="icon-bar"></span>
+                               <span className="icon-bar"></span>
                            </button>
                            <Link className="navbar-brand" to={ "/" }>SpaceY</Link>
                        </div>
@@ -21,18 +22,13 @@ export class NavMenu extends React.Component<{}, {}> {
                        <div className="navbar-collapse collapse">
                            <ul className="nav navbar-nav">
                                <li>
-                                   <NavLink to={ "/home" } activeClassName="active">
+                                   <NavLink to={ "/home/" } activeClassName="active">
                                        <span className="glyphicon glyphicon-sunglasses"></span> Home
                                    </NavLink>
                                </li>
                                <li>
-                                   <NavLink to={ "/counter" } activeClassName="active">
-                                       <span className="glyphicon glyphicon-education"></span> Counter
-                                   </NavLink>
-                               </li>
-                               <li>
-                                   <NavLink to={ "/fetchdata" } activeClassName="active">
-                                       <span className="glyphicon glyphicon-th-list"></span> Fetch data
+                                   <NavLink to={"/equationcreator"} activeClassName="active">
+                                        <span className="glyphicon glyphicon-plus-sign"></span> New Equation
                                    </NavLink>
                                </li>
                                <li>
@@ -40,6 +36,11 @@ export class NavMenu extends React.Component<{}, {}> {
                                        <span className="glyphicon glyphicon-tasks"></span> DnD Test
                                    </NavLink>
                                </li>
+                                <li>
+                                    <NavLink to={"/AllEquations/"} activeClassName="active">
+                                        <span className="glyphicon glyphicon-th-list"></span> All Equations
+                                   </NavLink>
+                        </li>
                            </ul>
                        </div>
                    </div>

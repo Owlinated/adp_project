@@ -1,0 +1,390 @@
+\documentclass[14]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage[swedish]{babel}
+\usepackage{todonotes}
+\usepackage{textcomp}
+\usepackage{verbatim}
+%\usepackage{hyperref}
+\usepackage{url}
+\usepackage{dirtytalk}
+\usepackage[autostyle]{csquotes}
+%\usepackage[]{natbib}
+%\usepackage{apacite}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{gensymb}
+\usepackage{amssymb}
+\usepackage[explicit]{titlesec}
+\restylefloat*{figure}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[T1]{fontenc}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{cleveref}
+\usepackage{graphics}
+\usepackage{multirow}
+\usepackage{pythonhighlight}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+
+\captionsetup[subfigure]{subrefformat=simple,labelformat=simple}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+%Formal tables
+\usepackage{booktabs}
+\usepackage{eso-pic}								% Create cover page background
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\newcommand{\backgroundpic}[3]{
+	\put(#1,#2){
+	\parbox[b][\paperheight]{\paperwidth}{
+	\centering
+	\includegraphics[width=\paperwidth-4.5cm,height=\paperheight,keepaspectratio]{#3}}}}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\newcommand{\changed}[1]{\textcolor{red}{#1}}
+\newcommand{\TODO}[1]{\todo[inline]{{\footnotesize #1}}}
+
+
+\usepackage[position=b]{subcaption}
+\begin{document}
+
+\iffalse
+Agile Development Processes Project Report
+Team 2
+Abdullah Awad
+Fredrik Burhöi Bengtsson
+Miray Iyidogan
+Filip Lindahl
+Tingting Liu
+Kevin Rasku
+Florian Stellbrink
+
+This is the project report template.
+Fill it out over the course of the project.
+
+# Project Description
+Include the project description from the assignment,
+your chosen target platform,
+programming language,
+and a name for the software.
+
+Link to your:
+
+- git repository
+- issue tracker
+- continuous integration builds
+
+# Sprint 1 Log
+Per sprint, fill out one sprint log section and its subsections.
+
+## Commitment
+List the features/stories that the team committed to finish during the sprint.
+
+## Work Done
+Log what was accomplished, and how.
+Please report on all activities; for example, in addition to coding, planning and design discussion.
+
+Feature | Time estimated | Time spent per team member
+--------|----------------|--------
+*Name and ID of each feature* | *X hours* | *Member A: Y hours, Member B: Z hours*
+
+## Reflections
+Reflect on how the work worked.
+This data will form the basis for your final reflection.
+As the postmortem will be a writeup, it's fine to use shorthand notes, bullet list, and similar.
+Keep within 1000-1500 words.
+
+Discuss any deviations from the sprint commitment.
+
+Reflect on the agile practice practiced:
+
+- Did your experience correspond to or contradict with what literature claims?
+
+    - Analysis of why. Mostly interesting if something unexpected happens, but even
+      if everything runs according to plan, reflecting on the underlying mechanisms
+      can be interesting.
+
+- How did the practices interact?
+  Did they complement or counteract each other?
+
+- How efficient were the practices, given the time they took to use?
+
+
+# Sprint X Log
+*As for the previous sprints.*
+
+
+# Postmortem
+Once the project is finished, summarize your experiences.
+The postmortem part shall be 2000-3000 words long.
+
+Considering the following:
+
+- With regards to the agile practices, reflect on the combined experience from all sprints.
+
+- Which practices had the most impact on the software developed?
+  Think of both positives and negatives.
+
+- What would you do differently in a future but similar project?
+
+
+# Project outcome
+Document the project, for example using screenshots.
+\fi
+
+\noindent 
+\textbf{Agile Development Processes Project Report} \\
+\textbf{Team 2:} 
+Abdullah Awad,
+Filip Lindahl,
+Florian Stellbrink,
+Fredrik Burhöi Bengtsson, 
+Kevin Rasku,
+Tingting Liu,
+Miray Iyidogan. \\ 
+
+
+\section{Project Description}
+SpaceY is a visionary company that launches rocket shaped objects into space. We often have to type in a lot of rocket calculations into spreadsheets which requires us to memorise them. Therefore we are looking for someone to create an app which stores rocketry equations and lets us type in the required values so we can validate the spreadsheets. This should be a very simple application with a strong focus on the UX.
+
+\subsection{Links to the project}
+\href{https://github.com/Owlinated/adp_project}{Project on github} \\
+\href{https://github.com/Owlinated/adp_project/projects/1}{Issue tracker for the project} \\
+\href{https://adp-spacey.herokuapp.com/}{State and Unit Tests of the project}
+
+\subsection{Target platform}
+A web-application that is primarily used on a desktop but that is also designed to work on mobile devices.
+
+\subsection{Programming language}
+Javascript (React) for the frontend, and ASP.NET Core for the backend.
+
+\subsection{Name of the software}
+SpaceY Equation App.
+\section{Sprint 1 Log}
+\subsection{Commitment}
+\begin{itemize}
+    \item Set up a communication channel
+    \item Brainstorming for initial requirements
+    \item Initial meeting with customer/coach
+    \item Set up git environment
+    \item Set up issue tracker
+    \item Create initial backlog
+    \item Create hello world application
+    \item Prepare first report
+\end{itemize}
+\subsection{Work done}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|l|l|}
+        \textbf{Task} & \textbf{Time estimated} & \textbf{Time spent per member}  \\
+        \hline
+        Set up a communication channel & 10 Mins & 10 Mins per member \\
+        Brainstorming for initial requirements & 30 Mins & 15 Mins per member\\
+        Initial meeting with customer/coach & 15 Mins & 10 Mins per member \\
+        Set up git environment & 30 Mins & 25 mins per member \\
+        Set up issue tracker & 25 Mins & 15 mins per member \\
+        Create initial backlog & 20 Mins & 15 Mins per member \\
+        Create hello-world application & 20 Mins & 20 mins per member  \\
+        Prepare first report & 20 Mins & 15 mins per member \\
+    \end{tabular}
+    \caption{Work done by each team member during the sprint}
+    \label{tab:my_label}
+\end{table}
+
+
+\subsection{Reflections}
+For the first meeting, we had a brainstorming session to figure out some of the main requirements of our project. Later, We created a Slack channel for communications, agreed on technologies that are going to be used, set up the report and prepared the environment on Github and related services.\\
+Since this sprint was short and focused on getting started, there were no deviations from the sprint commitment.
+
+\section{Sprint 2 Log}
+
+\subsection{Commitment}
+
+\begin{itemize}
+    \item Make the home page with the most commonly used equations
+    \item Create a separate page with a list of equations
+    \item Make it possible to verify the equations
+\end{itemize}
+
+\subsection{Work done}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.45\textwidth}|l|p{0.45\textwidth}|}
+        \hline
+        \textbf{Task} & \textbf{Time estimated} & \textbf{Time spent per member}  \\
+        \hline
+        Home page with most commonly used equations & 20h & Florian, Miray: 5h each \\
+        \hline
+        Separate page with a list of equations & 20h & Abdullah, Tingting: 5h each\\
+        \hline
+        Verification of the equations & 20h & Kevin, Filip, Fredrik: 5h each \\
+        \hline
+        Learning the languages/code base & 10h & 2h per member \\
+        \hline
+        Planning/discussing/meeting & 10h & 3h per member \\
+        \hline
+        
+    \end{tabular}
+    \caption{Work done by each team member during the sprint}
+    \label{tab:my_label}
+\end{table}
+
+
+
+\subsection{Reflections}
+
+In the beginning of this sprint, we had a meeting where we planned out the sprint and assigned tasks. We also needed to discuss the technical details of the project since different people within the group had different levels of previous experience with this type of development. The group was divided into 3 smaller groups that were each assigned to a task in the sprint backlog.
+
+During the sprint,  the 3 different groups worked together on their task. It did also take a fair amount of time to get familiar with the code base and languages that we chose to work with. There were some scheduling issues, in terms of finding time where the different group members could meet and work together. This was also impacted by the lectures scheduled during the workshops this week.
+
+In terms of agile principles, we discussed which ones we wanted to use in this sprint or the next. For this sprint we did have collective code ownership since everyone was working with the same code collectively. We want to try to use more pair programming in the next sprint, also one member of the group expressed an interest in being the scrum master. 
+
+Looking at the sprint commitment, there were some things that we could have broken down into smaller pieces. If we look at the task about verifying the equations, the user story we had in the sprint backlog was the following: \textit{"As a user (rocket scientist) I want the equations to be verified and trustworthy because it is important that they are correct."} When we broke down the sub-tasks involved in this, we realized that in order to verify an equation we must be able to evaluate it. When evaluating equations, we also want to be able to edit the equations. In order to have equations to edit we must also be able to enter equations. We also needed to figure out if we needed to automate the verification of the equations and if it would need to involve any third party. 
+
+In that sense we deviated from what the sprint commitment explicitly said, since this particular commitment needed other things to be done in order to fulfill it. It could have been split into smaller pieces that are easier to estimate and implement in the time-span of a sprint.
+
+
+\section{Sprint 3 Log}
+
+\subsection{Commitment}
+
+\begin{itemize}
+    \item Create interface for inputting equations with bounded input
+    \item Drag and drop functionality for reordering equations in a list
+    \item Equations should have editable parameters
+\end{itemize}
+
+\subsection{Work done}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.45\textwidth}|l|p{0.45\textwidth}|}
+        \hline
+        \textbf{Task} & \textbf{Time estimated} & \textbf{Time spent per member}  \\
+        \hline
+        Interface for inputting equations & 20 & Abdullah: 15h  \\
+        \hline
+        Implement drag and drop functionality & 20 & Kevin: 10h \\
+        \hline
+        Verification of the equations & 20 & Florian, Miray \\
+        \hline        
+        Equations with editable parameters & 8 & Abdullah, Florian: 4h each \\
+        \hline        
+        Learning the languages/code base & 10 & 2h per member \\
+        \hline        
+        Planning/discussing/meeting & 10 & 3h per member \\
+        \hline        
+        Planning and setting up the planning poker session & NA & Fredrik 1h \\
+        \hline        
+        Writing the report & NA & 2.5h per member \\
+        \hline        
+        Creating a page for showing all equations & 2 & Fredrik 2+xh \\
+        \hline        
+        Evaluation of equations & NA & Filip: 4h \\
+        \hline        
+        Refactoring of code & NA & Filip: 4h \\
+        \hline
+        
+    \end{tabular}
+    \caption{Work done by each team member during the sprint}
+    \label{tab:my_label}
+\end{table}
+
+\subsection{Reflections}
+
+\subsubsection{Deviations from sprint commitment}
+The task of making equations have editable parameters was not finished at the time of writing this report. This is because we underestimated the difficulty of this task. One reason for this is because there were things from the last sprint that we needed to change in order to make things work in this sprint. 
+
+
+
+\subsubsection{Sprint Planning}
+We had a meeting in the beginning of the sprint where we planned for the next sprint and assigned tasks. The difficulty of the tasks was estimated using planning poker. Each member of the group assigned themselves to a task that they would like to work on during the sprint.
+
+\subsubsection{Simple design}
+We have done no upfront design whatsoever, all design is done by the developers when they work on the tasks and if any issues with the design were to arise, we simply refactor the code. We have not had to design any complex features that have complicated interactions with other features yet, so were able to simply add the new features to the old ones without much trouble. 
+
+\subsubsection{Refactoring}
+The system for evaluating equations was changed from a dummy system written internally to a fully functioning system, written for .NET, called \textit{NCalc}.
+This meant that several files were removed and some were rewritten to work with \textit{NCalc}.
+
+\subsubsection{Sustainable Pace}
+The fact that some group-members had more experience using the framework led to some members spending more time to "catch up". We'll have to take care when we assign tasks and to do mentoring activities to make sure that everyone feels comfortable working with the project. 
+
+\subsubsection{Planning Poker}
+This time we used planning poker to try to estimate the difficulty of the different tasks. We used a measure where 1 unit is the difficulty of writing a hello world program. Since we did not do this planning game in the last sprint, we did not have a reference for our estimates and the velocity of our team. It did however help give us an idea which tasks may need to have more people assigned to them due to a relatively high difficulty. We also used a channel in our slack team instead of the official cards which worked just as well. 
+
+\subsubsection{Collective code ownership \& CI}
+In this sprint we also continued with the agile practices of collective code ownership with git and continuous integration with Travis. During this sprint we made sure that we merged the changes that each member made on other branches to the master branch. This was something we discussed during the retrospective since we did not do it last sprint. 
+
+\subsubsection{Retrospective Meeting}
+Since there was no sprint retrospective directly after the acceptance tests like after the previous sprints, we had a retrospective meeting by ourselves where we discussed and answered the following questions:
+\begin{itemize}
+\item What went well for us? \\
+- The communication over slack \\ 
+- Self-organizing process of the team \\
+- The creation of sub groups \\
+- The knowledge acquisition of members \\
+- Working together \\
+- The customer was happy to a certain extent 
+\item What did not go so well for us? \\
+- The tasks were not clearly defined \\
+- Tasks were assigned to group members at the beginning of the sprint but no new tasks were assigned to anyone during the sprint.\\
+- The report writing needs more collaboration 
+\item What are we going to do next? \\
+- Set up a new channel on slack for daily meetings and reviews \\
+- Add a reminder to write down comments there every other day \\
+- Meet each time once to write the report of the next phase \\
+- Add new items to the backlog for the next sprint \\
+- Make sure to merge changes to main branch on time by all members \\
+- Focus on writing more tests 
+\end{itemize}
+
+
+\subsubsection{Daily Meetings}
+During the retrospective for the second sprint issues with communication within the group, and a lack of knowledge about the current status of the tasks were discussed. Therefore, we decided to start with short daily meetings following the daily scrum-template. However, due to the fact that we should only spend 20 hours each week including lectures, acceptance tests, and retrospectives we decided that it would not be worthwhile to have this meetings every day. Instead we chose to have them on Mondays, Wednesdays, and Fridays and because of our conflicting schedules we chose to have them in a dedicated channel on our slack.Basically,we are discussing about the works we have done in partial coding also,individual developments.With these meetings,we can follow up each others currents statues about project and help each other.
+
+
+\subsection{Agile Principles we Plan to try During the Next Sprint}
+\begin{itemize}
+    \item TDD
+    \item Coding standards/Definition of done
+    \item Proper pair programming 
+\end{itemize}
+
+
+\section{Postmortem}
+To be added later.
+
+\section{Project outcome}
+To be added later.
+
+\end{document}
