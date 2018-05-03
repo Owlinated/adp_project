@@ -57,6 +57,16 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
             </div>);
     }
 
+    DeleteEquation(eqid: number)
+    {
+        if (confirm("Are you sure yoy want to permanently delete this equation?"))
+        {
+            fetch(`api/Equations/${eqid}/Delete`, { method: "POST", headers: { 'Accept': "application/json", 'Content-Type': "application/json", } })
+            .then(response => response.json() as Promise<IRestNestedEquation[]>)
+            .then(data => { this.setState({ equations: data, loading: false }); });
+        }
+    }
+
     /**
      * Render a single equations detail view.
      * Only render it, if it is selected.
@@ -70,19 +80,13 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
         return <div className="panel-collapse collapse in" aria-expanded="true">
             <div className="panel-body">
                 <p>
-                    <NavLink to={`/equations/${equation.main.id}`} activeClassName="active">
-                        Go to equation
-                           </NavLink>
+                    <NavLink to={`/equations/${equation.main.id}`} activeClassName="active" className="btn-link">Open</NavLink>
+                    &nbsp;|&nbsp;
+                    <NavLink to={`/equationcreator/${equation.main.id}`} activeClassName="active" className="btn-link">Update</NavLink>
+                    &nbsp;|&nbsp;
+                    <a onClick={() => this.DeleteEquation(equation.main.id)} className="btn-link eq-nav-link">Delete</a>
                 </p>
-                <p>
-                    <NavLink to={`/equationcreator/${equation.main.id}`} activeClassName="active">
-                        Update this equation
-                           </NavLink>
-                </p>
-                <Equation match={this.props.match}
-                    location={this.props.location}
-                    history={this.props.history}
-                    staticContext={this.props.staticContext} />
+                <Equation match={this.props.match} location={this.props.location} history={this.props.history} staticContext={this.props.staticContext} />
             </div>
         </div>;
     }

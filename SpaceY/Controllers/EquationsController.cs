@@ -93,6 +93,23 @@ namespace SpaceY.Controllers
             }
         }
 
+        /// <summary>
+        /// Compute the value of an equation with the specified or default parameters.
+        /// </summary>
+        [HttpPost("{id}/[action]")]
+        public IEnumerable<RestNestedEquation> Delete(int id)
+        {
+            try
+            {
+                EquationStore.DeleteEquation(id);
+                return EquationStore.AllEquations.AsEnumerable().Select(ConvertToNested);
+            }
+            catch
+            {
+                return EquationStore.AllEquations.AsEnumerable().Select(ConvertToNested);
+            }
+        }
+
         private static RestNestedEquation ConvertToNested(Equation equation)
         {
             return new RestNestedEquation

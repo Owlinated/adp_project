@@ -89,5 +89,13 @@ namespace SpaceY.DataAccess
             equation.Id = counter++;
             equations.Add(equation);
         }
+
+        /// <summary>
+        /// Delete an equation from the store.
+        /// </summary>
+        public void DeleteEquation(int id)
+        {
+            equations.RemoveAll(x => x.Id.Equals(id));
+        }
     }
 }

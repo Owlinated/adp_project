@@ -19,6 +19,10 @@
     z-index: 1;
 }
 
+.eq-nav-link { 
+    cursor: pointer; 
+}
+
 /* Equation Creator Styles */
 
 .creatortextarea {
