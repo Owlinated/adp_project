@@ -23,27 +23,27 @@ namespace SpaceY.DataAccess
         /// </summary>
         public EquationStore()
         {
-            AddEquation(new Equation("1 + 2"));
-            AddEquation(new Equation("3 + 5"));
-            AddEquation(new Equation("Sin(0)"));
-            AddEquation(new Equation("1 + 2 + 3 + 4 + 5"));
-            AddEquation(new Equation("7 * 7"));
-            AddEquation(new Equation("1 + 2"));
-            AddEquation(new Equation("3 + 5"));
-            AddEquation(new Equation("Sin(0)"));
-            AddEquation(new Equation("1 + 2 + 3 + 4 + 5"));
-            var equation1 = new Equation("7 * 7");
+            AddEquation(new Equation("a", "1 + 2"));
+            AddEquation(new Equation("b", "3 + 5"));
+            AddEquation(new Equation("c", "Sin(0)"));
+            AddEquation(new Equation("d", "1 + 2 + 3 + 4 + 5"));
+            AddEquation(new Equation("e", "7 * 7"));
+            AddEquation(new Equation("l", "1 + 2"));
+            AddEquation(new Equation("o", "3 + 5"));
+            AddEquation(new Equation("p", "Sin(0)"));
+            AddEquation(new Equation("u", "1 + 2 + 3 + 4 + 5"));
+            var equation1 = new Equation("y", "7 * 7");
             AddEquation(equation1);
 
             var parameters2 = new[] { new RestEquationParam { Default = 1.0, Description = "dummy", Name = "d" } };
-            var equation2 = new Equation(
+            var equation2 = new Equation("x", 
                 serialized: $"Ref({equation1.Id}) * Var(0) + 1",
                 parameters: parameters2,
                 references: new[] { equation1 });
             AddEquation(equation2);
 
             var parameters3 = new[] { new RestEquationParam { Default = 1.0, Description = "dummy", Name = "d" } };
-            var equation3 = new Equation(
+            var equation3 = new Equation("r", 
                 serialized: $"Ref({equation1.Id}) + Ref({equation2.Id}) + 3.1415",
                 parameters: parameters2,
                 references: new[] { equation1, equation2 });
@@ -78,7 +78,7 @@ namespace SpaceY.DataAccess
                             .ToList();
 
             // Create a new equation using the collected references and parameters
-            return new Equation(restEquation.Equation, restEquation.Parameters, references);
+            return new Equation(restEquation.Description, restEquation.Equation, restEquation.Parameters, references);
         }
 
         /// <summary>

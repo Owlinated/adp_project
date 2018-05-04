@@ -51,7 +51,7 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
                             ? "/home"
                             : `/home/${equation.main.id}`}
                         activeClassName="active">
-                        {equation.main.equation}
+                        {equation.main.description}
                     </NavLink>
                 </div>
                 {this.renderCollapsibleEquation(equation)}

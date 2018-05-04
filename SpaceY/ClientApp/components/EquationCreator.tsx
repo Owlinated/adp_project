@@ -8,6 +8,7 @@ import { IRestEquationParam } from "../interface/IRestEquationParam";
 //--- The creator interface which defines the data structure of our component  
 interface ICreatorState
 {
+    Description: string ;
     EquationText: string;
     CurrentDisabledButtons: any;
     OpenBrackets: number;
@@ -88,6 +89,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         //--- Set the initial state
         this.state =
         {
+            Description: "",
             EquationText: "",
             CurrentDisabledButtons: this.DisButtons[this.DefaultSet],
             OpenBrackets: this.OpenedBrackets,
@@ -317,7 +319,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             { name: "X", default: this.state.DefaultValues[0] },
             { name: "Y", default: this.state.DefaultValues[1] },
             { name: "Z", default: this.state.DefaultValues[2] }] as IRestEquationParam[];
-        return { equation: this.GetEquationValue(), parameters: params } as IRestEquation;
+        return { description:this.state.Description, equation: this.GetEquationValue(), parameters: params } as IRestEquation;
     }
 
     //-- Called on every change to fetch data from server
@@ -374,6 +376,11 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         this.setState({ DefaultValues: this.DefaultValues.slice() });
     }
 
+    UpdateDescription(val: any)
+    {
+        this.setState({Description: val.target.value});
+    }
+
     //--- The render function of our component
     render()
     {
@@ -382,7 +389,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                 <div><h1>Equation Creator</h1></div>
                 <div className="creatorcontainerdiv">
                     <div className="creatorfirstdiv">
-                        <div><h4>Equation Description:</h4><input type="text" className="form-control" /></div>
+                        <div><h4>Equation Description:</h4><input type="text" value={this.state.Description} className="form-control" onChange={val => this.UpdateDescription(val)} /></div>
                         <div><h4>Current Input:</h4>
                         <textarea readOnly={true} rows={1} className="form-control creatortextarea" value={this.state.EquationText} />
                         </div>

@@ -16,8 +16,9 @@ namespace SpaceY.Core
         /// Initializes a new instance of the <see cref="Equation"/> class.
         /// Parses the expression from the serialized version.
         /// </summary>
-        public Equation(string serialized, IList<RestEquationParam> parameters = null, IList<Equation> references = null)
+        public Equation(string description, string serialized, IList<RestEquationParam> parameters = null, IList<Equation> references = null)
         {
+            Description = description;
             EquationString = serialized;
             Parameters = parameters ?? new List<RestEquationParam>();
             References = references ?? new List<Equation>();
@@ -28,6 +29,11 @@ namespace SpaceY.Core
         /// Gets or sets the equation's identifier.
         /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the equation's description.
+        /// </summary>
+        public string Description { get; set; }
 
         /// <summary>
         /// Gets or sets the equation's string representation.
