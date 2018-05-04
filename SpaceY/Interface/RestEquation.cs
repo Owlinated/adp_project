@@ -17,7 +17,6 @@ namespace SpaceY.Interface
         /// </summary>
         public string Description { get; set; }
 
-
         /// <summary>
         /// Gets or sets the serialized equation.
         /// </summary>

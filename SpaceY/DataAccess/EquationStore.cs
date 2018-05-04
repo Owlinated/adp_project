@@ -35,15 +35,33 @@ namespace SpaceY.DataAccess
             var equation1 = new Equation("y", "7 * 7");
             AddEquation(equation1);
 
-            var parameters2 = new[] { new RestEquationParam { Default = 1.0, Description = "dummy", Name = "d" } };
-            var equation2 = new Equation("x", 
+            var parameters2 = new[]
+            {
+                new RestEquationParam
+                {
+                    Standard = 1.0,
+                    Description = "dummy",
+                    Name = "d"
+                }
+            };
+            var equation2 = new Equation(
+                "x",
                 serialized: $"Ref({equation1.Id}) * Var(0) + 1",
                 parameters: parameters2,
                 references: new[] { equation1 });
             AddEquation(equation2);
 
-            var parameters3 = new[] { new RestEquationParam { Default = 1.0, Description = "dummy", Name = "d" } };
-            var equation3 = new Equation("r", 
+            var parameters3 = new[]
+            {
+                new RestEquationParam
+                {
+                    Standard = 1.0,
+                    Description = "dummy",
+                    Name = "d"
+                }
+            };
+            var equation3 = new Equation(
+                "r",
                 serialized: $"Ref({equation1.Id}) + Ref({equation2.Id}) + 3.1415",
                 parameters: parameters2,
                 references: new[] { equation1, equation2 });

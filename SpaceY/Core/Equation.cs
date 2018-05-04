@@ -96,7 +96,7 @@ namespace SpaceY.Core
                     return;
                 }
 
-                args.Result = Convert.ToDouble(param.Default);
+                args.Result = Convert.ToDouble(param.Standard);
             }
 
             void EvaluateRef(FunctionArgs args)

@@ -300,9 +300,9 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                 // Replace tokens with interface variants
                 .replace(/×/g, "*")
                 .replace(/÷/g, "/")
-                .replace(/X/g, "var(0)")
-                .replace(/Y/g, "var(1)")
-                .replace(/Z/g, "var(2)")
+                .replace(/X/g, `var(${this.GetUsedParams().indexOf("X")})`)
+                .replace(/Y/g, `var(${this.GetUsedParams().indexOf("Y")})`)
+                .replace(/Z/g, `var(${this.GetUsedParams().indexOf("Z")})`)
                 .replace(/sin\(/g, "Sin\(")
                 .replace(/cos\(/g, "Cos\(");
             for (let i = 0; i < openBrackets; ++i)
@@ -315,11 +315,25 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
     //-- Build a rest equation form the current state
     GetRestEquation(): IRestEquation {
-        const params = [
-            { name: "X", default: this.state.DefaultValues[0] },
-            { name: "Y", default: this.state.DefaultValues[1] },
-            { name: "Z", default: this.state.DefaultValues[2] }] as IRestEquationParam[];
-        return { description:this.state.Description, equation: this.GetEquationValue(), parameters: params } as IRestEquation;
+        const usedParams = this.GetUsedParams();
+        let params = [];
+        for (let param of usedParams) {
+            const index = ["X","Y","Z"].indexOf(param);
+            params.push({ name: param, standard: this.state.DefaultValues[index] } as IRestEquationParam)
+        }
+        return { id:-1, description:this.state.Description, equation: this.GetEquationValue(), parameters: params } as IRestEquation;
+    }
+
+    //-- Get the used parameters
+    GetUsedParams() {
+        const paramnames = ["X","Y","Z"];
+        let result = []
+        for (let param of paramnames){
+            if(this.state.EquationText.includes(param)) {
+                result.push(param);
+            }
+        }
+        return result;
     }
 
     //-- Called on every change to fetch data from server
