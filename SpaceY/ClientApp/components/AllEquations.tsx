@@ -50,7 +50,7 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
                             ? "/AllEquations/"
                             : `/AllEquations/${equation.main.id}`}
                         activeClassName="active">
-                        {equation.main.equation}
+                        {equation.main.description}
                     </NavLink>
                 </div>
                 {this.renderCollapsibleEquation(equation)}

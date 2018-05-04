@@ -8,7 +8,7 @@ interface IEquationState {
     loading: boolean;
     equation: IRestNestedEquation | undefined;
     result: number | undefined;
-    parameters: { [equationId: number]: { [parameterId: number]: number } };
+    parameters: { [equationId: number]: { [parameterId: number]: number | undefined } };
 }
 
 /**
@@ -62,7 +62,6 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
         const equation = this.state.equation as IRestNestedEquation;
         return <div>
             {this.renderReferences(equation.references)}
-            <h2>Equation</h2>
             {this.renderEquation(equation.main)}
         </div>;
     }
@@ -126,7 +125,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
     renderParameter(equation: IRestEquation, parameter: IRestEquationParam, index: number) {
         return <div className="input-group">
                    <span className="input-group-addon">{parameter.description} ({parameter.name})</span>
-                   <input type="text" className="form-control" placeholder={`${parameter.default}`}
+                   <input type="number" className="form-control" placeholder={`${parameter.standard}`}
                           onChange={(value: React.ChangeEvent<HTMLInputElement>) => this.updateParam(equation, index, value)}/>
                </div>;
     }
@@ -138,7 +137,9 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
      * @param value New value of the parameter.
      */
     updateParam(equation: IRestEquation, index: number, value: React.ChangeEvent<HTMLInputElement>) {
-        const newValue = Number(value.target.value);
+        const newValue = value.target.value
+            ? Number(value.target.value)
+            : undefined;
         this.setState((prevState: IEquationState) => {
             // We are not allowed to change the previous state by reference, so we clone it.
             prevState = JSON.parse(JSON.stringify(prevState));

@@ -106,6 +106,7 @@ namespace SpaceY.Controllers
         {
             return new RestEquation
             {
+                Description = equation.Description,
                 Id = equation.Id,
                 Equation = equation.Serialize(),
                 Parameters = equation.Parameters

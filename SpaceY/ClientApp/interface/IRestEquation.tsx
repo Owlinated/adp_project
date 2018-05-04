@@ -2,6 +2,7 @@
 
 export interface IRestEquation {
     id: number;
+    description: string;
     equation: string;
     parameters: IRestEquationParam[];
 }
