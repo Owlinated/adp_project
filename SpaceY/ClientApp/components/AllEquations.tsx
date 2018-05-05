@@ -47,10 +47,10 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
                 <div className="panel-heading">
                     <NavLink
                         to={equation.main.id.toString() === this.props.match.params.id
-                            ? "/AllEquations"
+                            ? "/AllEquations/"
                             : `/AllEquations/${equation.main.id}`}
                         activeClassName="active">
-                        {equation.main.equation}
+                        {equation.main.description}
                     </NavLink>
                 </div>
                 {this.renderCollapsibleEquation(equation)}

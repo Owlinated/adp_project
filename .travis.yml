@@ -16,3 +16,5 @@ script:
   - dotnet restore
   - dotnet build
   - dotnet test ./SpaceY.Tests/SpaceY.Tests.csproj
+# build in release mode
+  - dotnet publish -c Release

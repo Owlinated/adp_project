@@ -13,6 +13,11 @@ namespace SpaceY.Interface
         public int? Id { get; set; }
 
         /// <summary>
+        /// Gets or sets description of equation.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// Gets or sets the serialized equation.
         /// </summary>
         public string Equation { get; set; }

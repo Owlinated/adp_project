@@ -3,7 +3,7 @@ import { Route, Redirect, Switch } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 import { Dndbox } from "./components/Dndbox";
-import { Equation } from "./components/Equation";
+import { EquationDetail } from "./components/EquationDetail";
 import { EquationCreator } from "./components/EquationCreator";
 import { withRouter } from 'react-router-dom'
 import { AllEquations } from "./components/AllEquations";
@@ -20,7 +20,7 @@ export const routes =
             <Route path="/equationcreator/:id([0-9]*)" component={ withRouter(EquationCreator) } />
             <Route path="/dndbox" component={ Dndbox }/>
             <Route path="/AllEquations/:id([0-9]*)" component={ withRouter(AllEquations) } />
-            <Route path="/equations/:id([0-9]+)" component={withRouter(Equation)}/>
+            <Route path="/equations/:id([0-9]+)" component={withRouter(EquationDetail)}/>
             <Redirect to="/home/" />
         </Switch>
     </Layout>;
