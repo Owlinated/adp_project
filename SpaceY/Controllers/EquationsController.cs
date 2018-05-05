@@ -33,9 +33,18 @@ namespace SpaceY.Controllers
         public CreatedResult Create([FromBody]RestEquation equation)
         {
             var parsed = EquationStore.CreateEquation(equation);
-            EquationStore.AddEquation(parsed);
 
-            equation.Id = parsed.Id;
+            if (!equation.Id.HasValue || equation.Id.Equals(-1))
+            {
+                equation.Id = parsed.Id;
+                EquationStore.AddEquation(parsed);
+            }
+            else
+            {
+                parsed.Id = equation.Id.Value;
+                EquationStore.UpdateEquation(parsed);
+            }
+
             return Created($"/equations/{parsed.Id}", equation);
         }
 

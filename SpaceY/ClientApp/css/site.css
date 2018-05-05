@@ -65,6 +65,12 @@
     width: 23%;
 }
 
+.equationddlbutton {
+    font-size: 1.3em;
+    padding: 7px 10px;
+    width: 97%;
+}
+
 .creatorbutton:hover {
     background-color: white; 
 }
@@ -77,6 +83,17 @@
 .creatorsavebarbutton {
     width: 100%;
     margin-top: 15px;
+}
+
+.dropdown-menu {
+    margin: 3px;
+    width: 97%;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
 }
 
 

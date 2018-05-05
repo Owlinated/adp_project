@@ -67,11 +67,11 @@ namespace SpaceY.DataAccess
         public Equation CreateEquation(RestEquation restEquation)
         {
             // Define regex for looking up ref(0) expressions
-            var referenceRegEx = new Regex(@"ref\((\d+)\)", RegexOptions.IgnoreCase);
+            var referenceRegEx = new Regex(@"Ref\((\d+)\)", RegexOptions.IgnoreCase);
             var referenceMatches = referenceRegEx.Matches(restEquation.Equation);
 
             // Foreach match, find its index and look that up.
-            var referenceIds = referenceMatches.Select(refMatch => int.Parse(refMatch.Captures.First().Value));
+            var referenceIds = referenceMatches.Select(refMatch => int.Parse(refMatch.Captures.First().Value.Substring(4).Replace(")", string.Empty)));
             var references = referenceIds
                             .Select(refId => AllEquations.FirstOrDefault(equation => equation.Id == refId))
                             .Where(reference => reference != null)
@@ -87,6 +87,15 @@ namespace SpaceY.DataAccess
         public void AddEquation(Equation equation)
         {
             equation.Id = counter++;
+            equations.Add(equation);
+        }
+
+        /// <summary>
+        /// Update an already saved equation into the store.
+        /// </summary>
+        public void UpdateEquation(Equation equation)
+        {
+            this.DeleteEquation(equation.Id);
             equations.Add(equation);
         }
 

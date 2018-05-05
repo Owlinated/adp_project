@@ -77,24 +77,31 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     DefaultValues = new Array(3).fill(0);
 
     //--- Keep track of history in a local variable (we might need to store this with the equation itself to enable future editing)
-    StatesHistory = [this.state];
+    StatesHistory: any;
+
+    IsParsing = false;
+    ShouldRender = false;
 
     //--- Constructor of the component
     constructor(props: any)
     {
         super(props);
         this.SetDisabledButtons();
-
+        
         //--- Set the initial state
         this.state =
         {
             EquationText: "",
             CurrentDisabledButtons: this.DisButtons[this.DefaultSet],
             OpenBrackets: this.OpenedBrackets,
-            Result: 0,
+            Result: "",
             NumberStatus: this.NumberStatus.Clone(),
-            DefaultValues: this.DefaultValues.slice()
+            DefaultValues: this.DefaultValues.slice(),
         };
+
+        //--- Check if we are in Edit mode and act accordingly
+        this.StatesHistory = [this.state];
+        this.FetchCurrentEquation();
     }
 
     //--- The following function defines the set of buttons that need to be disabled after pressing a certain button
@@ -153,7 +160,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             EquationText: "",
             CurrentDisabledButtons: this.DisButtons[this.DefaultSet],
             OpenBrackets: this.OpenedBrackets,
-            Result: 0,
+            Result: "",
             NumberStatus: new NumberStatus(),
             DefaultValues: new Array(3).fill(0)
         });
@@ -321,27 +328,25 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     }
 
     //-- Called on every change to fetch data from server
-    componentDidUpdate(prevProps: any, prevState: ICreatorState) {
-        if (prevState.EquationText !== this.state.EquationText || prevState.DefaultValues !== this.state.DefaultValues) {
+    componentDidUpdate(prevProps: any, prevState: ICreatorState)
+    {
+        if (!this.IsParsing && (prevState.EquationText !== this.state.EquationText || prevState.DefaultValues !== this.state.DefaultValues))
+        {
+            this.setState({ Result: "Calculating ..." });
+
             // Post current equation to evaluator
             fetch("api/Equations/Evaluate",
-                    {
-                        method: "POST",
-                        headers: {
-                            'Accept': "application/json",
-                            'Content-Type': "application/json",
-                        },
-                        body: JSON.stringify(this.GetRestEquation())
-                })
+            {
+                method: "POST",
+                headers: {
+                    'Accept': "application/json",
+                    'Content-Type': "application/json",
+                },
+                body: JSON.stringify(this.GetRestEquation())
+            })
             // Interpret answer as result, and update state
-                .then(response => response.json() as Promise<IEvaluationResult>)
-                .then(data => {
-                    if (data.success) {
-                        this.setState({ Result: data.value });
-                    } else {
-                        this.setState({ Result: "Invalid equation" });
-                    }
-                });
+            .then(response => response.json() as Promise<IEvaluationResult>)
+            .then(data => { if (data.success) { this.setState({ Result: data.value }) } else { this.setState({ Result: "Invalid equation" }); } });
         }
     }
 
@@ -374,9 +379,58 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         this.setState({ DefaultValues: this.DefaultValues.slice() });
     }
 
+    //--- This function gets the equation ID we want to edit if available and Prepare the component to deal with it
+    FetchCurrentEquation()
+    {
+        if (this.props.match.params.id)
+        {
+            this.IsParsing = true;
+            fetch(`api/Equations/${this.props.match.params.id}`)
+                .then(response => response.json() as Promise<IRestNestedEquation>)
+                .then(data => { this.ReloadComponentByEquationText(data.main.equation); });
+        }
+        else
+        {
+            this.IsParsing = false;
+            this.ShouldRender = true;
+        }
+    }
+
+    //--- This function Reloads the component using the text the current equation we want to edit
+    ReloadComponentByEquationText(EqText: string)
+    {
+        let txt = EqText.replace(/\//g, "÷")
+                        .replace(/\*/g, "×")
+                        .replace(/v/g, "V")
+                        .replace(/Var\(0\)/g, "X")
+                        .replace(/Var\(1\)/g, "Y")
+                        .replace(/Var\(2\)/g, "Z")
+                        .replace(/Sin\(/g, "s")
+                        .replace(/Cos\(/g, "c")
+                        .replace(/\s/g, "");
+                
+        for (let i = 0; i < txt.length; i++)
+        {
+            let index = -1;
+
+            if (txt[i] === "s") index = this.AllButtons.indexOf("sin")
+            else if (txt[i] === "c") index = this.AllButtons.indexOf("cos")
+            else index = this.AllButtons.indexOf(txt[i]);
+
+            this.IsParsing = (i < txt.length -1);       //--- We finish parsing when dealing with the last symbol.
+            this.OnButtonClick(index);
+        }
+
+        this.ShouldRender = true;
+        this.setState({ Result: "Calculating ..." });   //--- So we force updating results.
+        this.StatesHistory.shift();
+    }
+
     //--- The render function of our component
     render()
     {
+        if (!this.ShouldRender) return (<div><h1>Equation Creator</h1><div><p>Loading..</p></div></div>);
+
         return (
             <div>
                 <div><h1>Equation Creator</h1></div>
@@ -384,7 +438,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                     <div className="creatorfirstdiv">
                         <div><h4>Equation Description:</h4><input type="text" className="form-control" /></div>
                         <div><h4>Current Input:</h4>
-                        <textarea readOnly={true} rows={1} className="form-control creatortextarea" value={this.state.EquationText} />
+                            <textarea readOnly={true} rows={1} className="form-control creatortextarea" value={this.state.EquationText} />
                         </div>
                         <div><h4>Current Value:</h4>
                             <textarea readOnly={true} rows={1} className="form-control creatortextarea" value={this.GetEquationValue()} /></div>
@@ -398,8 +452,8 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                             </table>
                         </div>
                         <div><h4>Result: </h4></div>
-                        <p><strong>{ this.state.Result}</strong></p>
-                      <span className="text-danger" hidden={this.OpenedBrackets === 0}>Note: Some open brackets are still not closed!</span>
+                        <p><strong>{this.state.Result}</strong></p>
+                        <span className="text-danger" hidden={this.OpenedBrackets === 0}>Note: Some open brackets are still not closed!</span>
                     </div>
                     <div className="creatorseconddiv">
                         <div>{this.generateButtons(0, 4)}</div>
