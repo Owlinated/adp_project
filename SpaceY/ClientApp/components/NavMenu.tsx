@@ -27,7 +27,7 @@ export class NavMenu extends React.Component<{}, {}> {
                                    </NavLink>
                                </li>
                                <li>
-                                   <NavLink to={"/equationcreator"} activeClassName="active">
+                                   <NavLink to={"/equationcreator/"} activeClassName="active">
                                         <span className="glyphicon glyphicon-plus-sign"></span> New Equation
                                    </NavLink>
                                </li>

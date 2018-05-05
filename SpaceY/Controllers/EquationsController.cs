@@ -33,9 +33,18 @@ namespace SpaceY.Controllers
         public CreatedResult Create([FromBody]RestEquation equation)
         {
             var parsed = EquationStore.CreateEquation(equation);
-            EquationStore.AddEquation(parsed);
 
-            equation.Id = parsed.Id;
+            if (!equation.Id.HasValue || equation.Id.Equals(-1))
+            {
+                equation.Id = parsed.Id;
+                EquationStore.AddEquation(parsed);
+            }
+            else
+            {
+                parsed.Id = equation.Id.Value;
+                EquationStore.UpdateEquation(parsed);
+            }
+
             return Created($"/equations/{parsed.Id}", equation);
         }
 
@@ -90,6 +99,23 @@ namespace SpaceY.Controllers
             catch
             {
                 return new RestEvaluationResult { Success = false };
+            }
+        }
+
+        /// <summary>
+        /// Compute the value of an equation with the specified or default parameters.
+        /// </summary>
+        [HttpPost("{id}/[action]")]
+        public IEnumerable<RestNestedEquation> Delete(int id)
+        {
+            try
+            {
+                EquationStore.DeleteEquation(id);
+                return EquationStore.AllEquations.AsEnumerable().Select(ConvertToNested);
+            }
+            catch
+            {
+                return EquationStore.AllEquations.AsEnumerable().Select(ConvertToNested);
             }
         }
 
