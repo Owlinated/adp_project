@@ -74,10 +74,7 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
                                Go to equation
                            </NavLink>
                        </p>
-                       <Equation match={this.props.match}
-                                 location={this.props.location}
-                                 history={this.props.history}
-                                 staticContext={this.props.staticContext}/>
+                       <Equation {...equation}/>
                    </div>
                </div>;
     }

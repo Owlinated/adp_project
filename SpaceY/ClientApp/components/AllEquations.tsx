@@ -86,7 +86,7 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
                     &nbsp;|&nbsp;
                     <a onClick={() => this.DeleteEquation(equation.main.id)} className="btn-link eq-nav-link">Delete</a>
                 </p>
-                <Equation match={this.props.match} location={this.props.location} history={this.props.history} staticContext={this.props.staticContext} />
+                <Equation {...equation}/>
             </div>
         </div>;
     }

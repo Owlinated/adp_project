@@ -56,10 +56,7 @@ export class EquationDetail extends React.Component<RouteComponentProps<any>, IE
         const equation = this.state.equation as IRestNestedEquation;
         return <div>
             <h1>{equation.main.description}</h1>
-            <Equation match={this.props.match}
-                      location={this.props.location}
-                      history={this.props.history}
-                      staticContext={this.props.staticContext}/> 
+            <Equation {...equation}/> 
         </div>;
     }
 }

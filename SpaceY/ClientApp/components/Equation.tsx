@@ -1,12 +1,9 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
 import { IRestEquation } from "../interface/IRestEquation";
 import { IRestEquationParam } from "../interface/IRestEquationParam";
 import { IRestNestedEquation } from "../interface/IRestNestedEquation";
 
 interface IEquationState {
-    loading: boolean;
-    equation: IRestNestedEquation | undefined;
     result: number | undefined;
     parameters: { [equationId: number]: { [parameterId: number]: number | undefined } };
 }
@@ -15,69 +12,45 @@ interface IEquationState {
  * Component for a detailed equation view.
  * This enables most interactions, such as evaluating equations.
  */
-export class Equation extends React.Component<RouteComponentProps<any>, IEquationState> {
-    constructor(props: RouteComponentProps<any>) {
+export class Equation extends React.Component<IRestNestedEquation, IEquationState> {
+    constructor(props: IRestNestedEquation) {
         super(props);
-        this.state = { loading: true, equation: undefined, result: undefined, parameters: {} };
-        this.fetchEquation();
+        this.state = { result: undefined, parameters: {} };
+        this.evaluateEquation();
     }
 
     /**
      * Update the displayed equation when its id changes.
      * This can be necessary, when switching between equations.
      */
-    componentDidUpdate(prevProps: RouteComponentProps<any>, prevState: IEquationState) {
-        if (prevProps.match.params.id !== this.props.match.params.id) {
-            this.fetchEquation();
-        }
+    componentDidUpdate(prevProps: IRestNestedEquation, prevState: IEquationState) {
         if (JSON.stringify(prevState.parameters) !== JSON.stringify(this.state.parameters) ||
-            prevState.equation !== this.state.equation) {
+            prevProps.main.equation !== this.props.main.equation) {
             this.evaluateEquation();
         }
-    }
-
-    /**
-     * Fetch the current equation from the server.
-     */
-    fetchEquation() {
-        this.setState({ loading: true, result: undefined });
-        fetch(`api/Equations/${this.props.match.params.id}`)
-            .then(response => response.json() as Promise<IRestNestedEquation>)
-            .then(data => {
-                this.setState({ equation: data, loading: false });
-                this.evaluateEquation();
-            });
     }
 
     /**
      *  Display the equation and all interaction elements.
      */
     render() {
-        if (this.state.loading) {
-            return <div>
-                <p>Loading..</p>
-            </div>;
-        }
-
-        const equation = this.state.equation as IRestNestedEquation;
         return <div>
-            {this.renderReferences(equation.references)}
-            {this.renderEquation(equation.main)}
+            {this.renderReferences()}
+            {this.renderEquation(this.props.main, true)}
         </div>;
     }
 
     /**
      * Render a list of referenced equations if it is non empty.
-     * @param references The list of referenced equations to render.
      */
-    renderReferences(references: IRestEquation[]) {
-        if (!(references.length > 0)) {
+    renderReferences() {
+        if (!(this.props.references.length > 0)) {
             return null;
         }
 
         return <div>
             <h2>References</h2>
-            {references.map(reference => this.renderReference(reference))}
+            {this.props.references.map(reference => this.renderReference(reference))}
         </div>;
     }
 
@@ -97,7 +70,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
                 </div>
                 <div id={`collapse${reference.id}`} className="panel-collapse collapse">
                     <div className="panel-body">
-                        {this.renderEquation(reference)}
+                        {this.renderEquation(reference, false)}
                     </div>
                 </div>
             </div>
@@ -108,8 +81,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
      * Render the equation. Right now this simply displays it as text.
      * @param equation The equation to render
      */
-    renderEquation(equation: IRestEquation) {
-        const isMain = equation === (this.state.equation as any).main;
+    renderEquation(equation: IRestEquation, isMain: boolean) {
         return <div>
                    <p>{isMain ? `${equation.equation} = ${this.state.result}` : equation.equation}</p>
                    {equation.parameters.map((parameter, index) => this.renderParameter(equation, parameter, index))}
@@ -163,7 +135,7 @@ export class Equation extends React.Component<RouteComponentProps<any>, IEquatio
             });
             */
 
-        fetch(`api/Equations/${this.props.match.params.id}/Evaluate`,
+        fetch(`api/Equations/${this.props.main.id}/Evaluate`,
                 {
                     method: "POST",
                     headers: {
