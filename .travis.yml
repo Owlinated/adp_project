@@ -8,11 +8,12 @@ addons:
       npm
 
 script:
-# restore npm packages
+# restore npm packages and run front-end tests
   - cd SpaceY
   - npm install
+  - npm test
   - cd ..
-# restore nuget packages and run tests
+# restore nuget packages and run back-end tests
   - dotnet restore
   - dotnet build
   - dotnet test ./SpaceY.Tests/SpaceY.Tests.csproj
