@@ -5,7 +5,6 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Equation } from "./Equation";
 import { IRestNestedEquation } from "../interface/IRestNestedEquation";
 import { Home } from "./Home";
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
 
 

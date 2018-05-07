@@ -37,7 +37,6 @@
     "@types/react-dnd": "^2.0.36",
     "react-beautiful-dnd": "^7.1.0",
     "react-dnd": "^2.6.0",
-    "react-dnd-html5-backend": "^2.6.0",
-    "react-sortable-hoc": "^0.6.8"
+    "react-dnd-html5-backend": "^2.6.0"
   }
 }
