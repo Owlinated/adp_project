@@ -4,7 +4,6 @@ import Enzyme from 'enzyme';
 import { NavMenu } from '../NavMenu';
 
 import Adapter from 'enzyme-adapter-react-16';
-
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('Navigation Menu Component', () => {
@@ -17,6 +16,6 @@ describe('Navigation Menu Component', () => {
     });
 
     it('the first link leads to the homepage', () => {
-
-    })
+        expect(shallow(<NavMenu />).find('NavLink').first().props().to).toBe('/home/');
+    });
 })
