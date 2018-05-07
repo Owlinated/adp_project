@@ -2,6 +2,10 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { DragSource } from 'react-dnd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Equation } from "./Equation";
+import { IRestNestedEquation } from "../interface/IRestNestedEquation";
+import { Home } from "./Home";
+import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
 
 
@@ -9,7 +13,9 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 /**
  * Test of drag and drop
  */
- 
+ interface dndState {
+    items: Array<any>;
+}
 
 //Generate list items
 var getItems = function getItems(count: number) {
@@ -31,13 +37,12 @@ const reorder = (list: Array<any>, startIndex: number, endIndex: number) => {
   return result;
 };
 
-const grid = 8;
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   // some basic styles for the items 
   userSelect: 'none',
-  padding: grid * 2.5,
-  margin: `0 0 ${grid}px 0`,
+  padding: 20,
+  margin: `0 0 ${8}px 0`,
 
   // change background colour when dragging item
   background: isDragging ? 'lightgreen' : 'lightgrey',
@@ -49,14 +54,14 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 var getListStyle = function getListStyle(isDraggingOver: any) {
   return {
     background: isDraggingOver ? 'white' : 'white',
-    padding: grid,
+    padding: 8,
     width: 500
   };
 };
 
 
  
-export class Dndbox extends React.Component {
+export class Dndbox extends React.Component<RouteComponentProps<any>, dndState> {
   constructor(props: RouteComponentProps<any>) {
     super(props);
     this.state = {
@@ -81,17 +86,28 @@ export class Dndbox extends React.Component {
       items,
     });
   }
-
+   
   render() {
+
     return (
+     /*
+    <div>
+                   <h1>Most used equations</h1>
+                   
+                   
+                   
+               </div>
+      */
+    
+   
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver)}
+              //style={getListStyle(snapshot.isDraggingOver)}
             >
-              {getItems(10).map((item, index) => (
+              {this.state.items.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
                   {(provided, snapshot) => (
                     <div
@@ -113,8 +129,16 @@ export class Dndbox extends React.Component {
           )}
         </Droppable>
       </DragDropContext>
+      
+    
+      
+      
+      
+      
     );
   }
+  
+  
 }
 
 

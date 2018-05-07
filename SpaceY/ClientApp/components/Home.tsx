@@ -4,6 +4,9 @@ import "isomorphic-fetch";
 import { NavLink } from "react-router-dom";
 import { IRestNestedEquation } from "../interface/IRestNestedEquation";
 import { Equation } from "./Equation";
+import { Dndbox } from "./Dndbox";
+import { DragSource } from 'react-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 interface IHomeState {
     equations: IRestNestedEquation[];
@@ -29,12 +32,16 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
      * Render the main view and a loading placeholder when appropriate.
      */
     render() {
+
+       
+        
+        
         return <div>
                    <h1>Most used equations</h1>
                    {this.state.loading
                        ? <p>Loading...</p>
                        : this.renderEquations(this.state.equations)}
-               </div>;
+               </div>;           
     }
 
     /**
