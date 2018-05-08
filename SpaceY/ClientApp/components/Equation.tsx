@@ -23,7 +23,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * Update the displayed equation when its id changes.
      * This can be necessary, when switching between equations.
      */
-    componentDidUpdate(prevProps: IRestNestedEquation, prevState: IEquationState) {
+    public componentDidUpdate(prevProps: IRestNestedEquation, prevState: IEquationState) {
         if (JSON.stringify(prevState.parameters) !== JSON.stringify(this.state.parameters) ||
             prevProps.main.equation !== this.props.main.equation) {
             this.evaluateEquation();
@@ -33,7 +33,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
     /**
      *  Display the equation and all interaction elements.
      */
-    render() {
+    public render() {
         return <div>
             {this.renderReferences()}
             {this.renderEquation(this.props.main, true)}
@@ -43,14 +43,14 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
     /**
      * Render a list of referenced equations if it is non empty.
      */
-    renderReferences() {
+    public renderReferences() {
         if (!(this.props.references.length > 0)) {
             return null;
         }
 
         return <div>
             <h2>References</h2>
-            {this.props.references.map(reference => this.renderReference(reference))}
+            {this.props.references.map((reference) => this.renderReference(reference))}
         </div>;
     }
 
@@ -58,7 +58,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * Render a single referenced equation.
      * @param reference The equation to render.
      */
-    renderReference(reference: IRestEquation) {
+    public renderReference(reference: IRestEquation) {
         return <div className="panel-group">
             <div className="panel panel-default">
                 <div className="panel-heading">
@@ -81,7 +81,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * Render the equation. Right now this simply displays it as text.
      * @param equation The equation to render
      */
-    renderEquation(equation: IRestEquation, isMain: boolean) {
+    public renderEquation(equation: IRestEquation, isMain: boolean) {
         return <div>
                    <p>{isMain ? `${equation.equation} = ${this.state.result}` : equation.equation}</p>
                    {equation.parameters.map((parameter, index) => this.renderParameter(equation, parameter, index))}
@@ -94,7 +94,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * @param parameter The parameter to render.
      * @param index The parameters index within the equation.
      */
-    renderParameter(equation: IRestEquation, parameter: IRestEquationParam, index: number) {
+    public renderParameter(equation: IRestEquation, parameter: IRestEquationParam, index: number) {
         return <div className="input-group">
                    <span className="input-group-addon">{parameter.description} ({parameter.name})</span>
                    <input type="number" className="form-control" placeholder={`${parameter.standard}`}
@@ -108,7 +108,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * @param index Index of the parameter within the equation.
      * @param value New value of the parameter.
      */
-    updateParam(equation: IRestEquation, index: number, value: React.ChangeEvent<HTMLInputElement>) {
+    public updateParam(equation: IRestEquation, index: number, value: React.ChangeEvent<HTMLInputElement>) {
         const newValue = value.target.value
             ? Number(value.target.value)
             : undefined;
@@ -126,7 +126,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
     /**
      * Ask server to evaluate the equation and add the values to the state.
      */
-    evaluateEquation() {
+    public evaluateEquation() {
         /*
         fetch(`api/Equations/${this.props.match.params.id}/Evaluate`)
             .then(response => response.json() as Promise<number>)
@@ -139,14 +139,14 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
                 {
                     method: "POST",
                     headers: {
-                        'Accept': "application/json",
-                        'Content-Type': "application/json",
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(this.state.parameters)
+                    body: JSON.stringify(this.state.parameters),
                 })
             // Interpret answer as result, and update state
-            .then(response => response.json() as Promise<number>)
-            .then(data => {
+            .then((response) => response.json() as Promise<number>)
+            .then((data) => {
                 this.setState({ result: data });
             });
     }

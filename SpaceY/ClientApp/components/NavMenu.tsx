@@ -5,7 +5,7 @@ import { Link, NavLink } from "react-router-dom";
  * The navigation menu, which is used for switching between views.
  */
 export class NavMenu extends React.Component<{}, {}> {
-    render() {
+    public render() {
         return <div className="main-nav">
                    <div className="navbar navbar-inverse">
                        <div className="navbar-header">
@@ -16,13 +16,13 @@ export class NavMenu extends React.Component<{}, {}> {
                                <span className="icon-bar"></span>
                                <span className="icon-bar"></span>
                            </button>
-                           <Link className="navbar-brand" to={ "/" }>SpaceY</Link>
+                           <Link className="navbar-brand" to={"/"}>SpaceY</Link>
                        </div>
                        <div className="clearfix"></div>
                        <div className="navbar-collapse collapse">
                            <ul className="nav navbar-nav">
                                <li>
-                                   <NavLink to={ "/home/" } activeClassName="active">
+                                   <NavLink to={"/home/"} activeClassName="active">
                                        <span className="glyphicon glyphicon-sunglasses"></span> Home
                                    </NavLink>
                                </li>
@@ -32,7 +32,7 @@ export class NavMenu extends React.Component<{}, {}> {
                                    </NavLink>
                                </li>
                                <li>
-                                   <NavLink to={ "/dndbox" } activeClassName="active">
+                                   <NavLink to={"/dndbox"} activeClassName="active">
                                        <span className="glyphicon glyphicon-tasks"></span> DnD Test
                                    </NavLink>
                                </li>
