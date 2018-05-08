@@ -34,10 +34,12 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      *  Display the equation and all interaction elements.
      */
     public render() {
-        return <div>
-            {this.renderReferences()}
-            {this.renderEquation(this.props.main, true)}
-        </div>;
+        return (
+            <div>
+                {this.renderReferences()}
+                {this.renderEquation(this.props.main, true)}
+            </div>
+        );
     }
 
     /**
@@ -48,10 +50,12 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
             return null;
         }
 
-        return <div>
+        return (
+            <div>
             <h2>References</h2>
             {this.props.references.map((reference) => this.renderReference(reference))}
-        </div>;
+            </div>
+        );
     }
 
     /**
@@ -59,22 +63,24 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * @param reference The equation to render.
      */
     public renderReference(reference: IRestEquation) {
-        return <div className="panel-group">
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    <h4 className="panel-title">
-                        <a data-toggle="collapse" href={`#collapse${reference.id}`}>
-                            {reference.equation}
-                        </a>
-                    </h4>
-                </div>
-                <div id={`collapse${reference.id}`} className="panel-collapse collapse">
-                    <div className="panel-body">
-                        {this.renderEquation(reference, false)}
+        return (
+            <div className="panel-group">
+                <div className="panel panel-default">
+                    <div className="panel-heading">
+                        <h4 className="panel-title">
+                            <a data-toggle="collapse" href={`#collapse${reference.id}`}>
+                                {reference.equation}
+                            </a>
+                        </h4>
+                    </div>
+                    <div id={`collapse${reference.id}`} className="panel-collapse collapse">
+                        <div className="panel-body">
+                            {this.renderEquation(reference, false)}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>;
+        );
     }
 
     /**
@@ -82,10 +88,12 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * @param equation The equation to render
      */
     public renderEquation(equation: IRestEquation, isMain: boolean) {
-        return <div>
-                   <p>{isMain ? `${equation.equation} = ${this.state.result}` : equation.equation}</p>
-                   {equation.parameters.map((parameter, index) => this.renderParameter(equation, parameter, index))}
-               </div>;
+        return (
+            <div>
+                <p>{isMain ? `${equation.equation} = ${this.state.result}` : equation.equation}</p>
+                {equation.parameters.map((parameter, index) => this.renderParameter(equation, parameter, index))}
+            </div>
+        );
     }
 
     /**
@@ -95,11 +103,17 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * @param index The parameters index within the equation.
      */
     public renderParameter(equation: IRestEquation, parameter: IRestEquationParam, index: number) {
-        return <div className="input-group">
-                   <span className="input-group-addon">{parameter.description} ({parameter.name})</span>
-                   <input type="number" className="form-control" placeholder={`${parameter.standard}`}
-                          onChange={(value: React.ChangeEvent<HTMLInputElement>) => this.updateParam(equation, index, value)}/>
-               </div>;
+        return (
+            <div className="input-group">
+                <span className="input-group-addon">{parameter.description} ({parameter.name})</span>
+                <input
+                    type="number"
+                    className="form-control"
+                    placeholder={`${parameter.standard}`}
+                    onChange={(value: React.ChangeEvent<HTMLInputElement>) => this.updateParam(equation, index, value)}
+                />
+            </div>
+        );
     }
 
     /**
@@ -136,13 +150,13 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
             */
 
         fetch(`api/Equations/${this.props.main.id}/Evaluate`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(this.state.parameters),
+            {
+                body: JSON.stringify(this.state.parameters),
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
                 })
             // Interpret answer as result, and update state
             .then((response) => response.json() as Promise<number>)

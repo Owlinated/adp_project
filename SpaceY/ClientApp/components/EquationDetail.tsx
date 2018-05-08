@@ -48,15 +48,19 @@ export class EquationDetail extends React.Component<RouteComponentProps<any>, IE
      */
     public render() {
         if (this.state.loading) {
-            return <div>
-                <p>Loading..</p>
-            </div>;
+            return (
+                <div>
+                    <p>Loading..</p>
+                </div>
+            );
         }
 
         const equation = this.state.equation as IRestNestedEquation;
-        return <div>
-            <h1>{equation.main.description}</h1>
-            <Equation {...equation}/>
-        </div>;
+        return (
+            <div>
+                <h1>{equation.main.description}</h1>
+                <Equation {...equation}/>
+            </div>
+        );
     }
 }

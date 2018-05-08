@@ -4,6 +4,7 @@ import { IEvaluationResult } from "../interface/IEvaluationResult";
 import { IRestEquation } from "../interface/IRestEquation";
 import { IRestEquationParam } from "../interface/IRestEquationParam";
 import { IRestNestedEquation } from "../interface/IRestNestedEquation";
+import { NumberStatus } from "./data/NumberStatus";
 
 // --- The creator interface which defines the data structure of our component
 interface ICreatorState {
@@ -18,49 +19,32 @@ interface ICreatorState {
 
 // --- Functional Component for creating the buttons of our component
 function CreatorButton(props: any) {
-    return (<button type="button" className="creatorbutton" disabled={props.disabled} onClick={props.onClick}>{props.text}</button>);
+    return (
+        <button
+            type="button"
+            className="creatorbutton"
+            disabled={props.disabled}
+            onClick={props.onClick}
+        >
+            {props.text}
+        </button>
+    );
 }
 
 // --- The NumberStatus class defines a type that is going to be used later
-class NumberStatus {
-    public active: boolean;
-    public decimaldot: boolean;
-    public zerostarted: boolean;
-    public value: string;
-
-    constructor() {
-        this.active = this.decimaldot = this.zerostarted = false;
-        this.value = "";
-    }
-
-    public Update(active: boolean | null, decimaldot: boolean | null, zerostarted: boolean | null, value: string | null) {
-        if (active != null) { this.active = active; }
-        if (decimaldot != null) { this.decimaldot = decimaldot; }
-        if (zerostarted != null) { this.zerostarted = zerostarted; }
-        if (value != null) { this.value += value; }
-    }
-
-    public Copycat(obj: NumberStatus) {
-        this.Update(obj.active, obj.decimaldot, obj.zerostarted, obj.value);
-    }
-
-    public Reset() {
-        this.active = this.decimaldot = this.zerostarted = false;
-        this.value = "";
-    }
-
-    public Clone() {
-        const result = new NumberStatus();
-        result.Copycat(this);
-        return result;
-    }
-}
 
 // --- The main component of our equation creator
 export class EquationCreator extends React.Component<RouteComponentProps<any>, ICreatorState> {
-    public AllButtons = ["sin", "cos", "(", ")", "7", "8", "9", "×", "4", "5", "6", "÷", "1", "2", "3", "-", "X", "0", ".", "+", "Y", "Z", "⌫", "Reset"];
-    public DefaultSet = this.AllButtons.length + 1;        // --- This will be used to set the length of states we have and to access the default set later
-    public DisButtons = Array(this.DefaultSet);            // --- Here we are using the DefaultSet as length of an array (later it will be used as an index)
+    public AllButtons = [
+        "sin", "cos", "(", ")",
+        "7", "8", "9", "×", "4", "5", "6", "÷", "1", "2", "3",
+        "-", "X", "0", ".", "+", "Y", "Z", "⌫", "Reset",
+    ];
+
+    // --- This will be used to set the length of states we have and to access the default set later
+    public DefaultSet = this.AllButtons.length + 1;
+    // --- Here we are using the DefaultSet as length of an array (later it will be used as an index)
+    public DisButtons = Array(this.DefaultSet);
 
     // --- Temporary variables to be used instead of the component's state
     // --- Those variables will hold the status of input to guide the user
@@ -68,7 +52,8 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     public NumberStatus = new NumberStatus();
     public DefaultValues = new Array(3).fill(0);
 
-    // --- Keep track of history in a local variable (we might need to store this with the equation itself to enable future editing)
+    // --- Keep track of history in a local variable
+    // --- (we might need to store this with the equation itself to enable future editing)
     public StatesHistory: any;
 
     public IsParsing = false;
@@ -82,13 +67,13 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
         // --- Set the initial state
         this.state = {
-            EquationText: "",
             CurrentDisabledButtons: this.DisButtons[this.DefaultSet],
+            DefaultValues: this.DefaultValues.slice(),
+            EquationText: "",
+            EquationsList: [],
+            NumberStatus: this.NumberStatus.Clone(),
             OpenBrackets: this.OpenedBrackets,
             Result: "",
-            NumberStatus: this.NumberStatus.Clone(),
-            DefaultValues: this.DefaultValues.slice(),
-            EquationsList: [],
         };
 
         // --- Check if we are in Edit mode and act accordingly
@@ -111,7 +96,9 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         this.DisButtons[this.AllButtons.indexOf("cos")] = ["+", "×", "÷", ".", ")"];
 
         // --- Next disabled buttons for (Close Bracket)
-        this.DisButtons[this.AllButtons.indexOf(")")] = ["sin", "cos", "(", "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "X", "Y", "Z"];
+        this.DisButtons[this.AllButtons.indexOf(")")] = [
+            "sin", "cos", "(", "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "X", "Y", "Z",
+        ];
 
         // --- Next disabled buttons for (0 - 9)
         this.DisButtons[this.AllButtons.indexOf("0")] =
@@ -123,15 +110,21 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         this.DisButtons[this.AllButtons.indexOf("6")] =
         this.DisButtons[this.AllButtons.indexOf("7")] =
         this.DisButtons[this.AllButtons.indexOf("8")] =
-        this.DisButtons[this.AllButtons.indexOf("9")] = ["sin", "cos", "(", "X", "Y", "Z"];
+        this.DisButtons[this.AllButtons.indexOf("9")] = [
+            "sin", "cos", "(", "X", "Y", "Z",
+        ];
 
         // --- Next disabled buttons for (.)
-        this.DisButtons[this.AllButtons.indexOf(".")] = ["sin", "cos", "(", ")", "×", "÷", "-", ".", "+", "X", "Y", "Z"];
+        this.DisButtons[this.AllButtons.indexOf(".")] = [
+            "sin", "cos", "(", ")", "×", "÷", "-", ".", "+", "X", "Y", "Z",
+        ];
 
         // --- Next disabled buttons for (X), (Y) and (Z)
         this.DisButtons[this.AllButtons.indexOf("X")] =
         this.DisButtons[this.AllButtons.indexOf("Y")] =
-        this.DisButtons[this.AllButtons.indexOf("Z")] = ["sin", "cos", "(", "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "X", "Y", "Z"];
+        this.DisButtons[this.AllButtons.indexOf("Z")] = [
+            "sin", "cos", "(", "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "X", "Y", "Z",
+        ];
 
         // --- Default set of disabled buttons
         this.DisButtons[this.DefaultSet] =
@@ -146,14 +139,14 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         this.OpenedBrackets = 0;
         this.ResetNumberStatus();
         this.setState(
-        {
-            EquationText: "",
-            CurrentDisabledButtons: this.DisButtons[this.DefaultSet],
-            OpenBrackets: this.OpenedBrackets,
-            Result: "",
-            NumberStatus: new NumberStatus(),
-            DefaultValues: new Array(3).fill(0),
-        });
+            {
+                CurrentDisabledButtons: this.DisButtons[this.DefaultSet],
+                DefaultValues: new Array(3).fill(0),
+                EquationText: "",
+                NumberStatus: new NumberStatus(),
+                OpenBrackets: this.OpenedBrackets,
+                Result: "",
+            });
 
         // --- We should reset history as well
         this.StatesHistory = [this.state];
@@ -229,25 +222,33 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     public OnButtonClick(i: number) {
         if (this.DisButtons[i]) {
             this.DealWithButton(i);
-            if (this.AllButtons[i] === "Reset" || this.AllButtons[i] === "⌫") { return; }   // --- No more changes are needed
+            if (this.AllButtons[i] === "Reset" || this.AllButtons[i] === "⌫") {
+                // --- No more changes are needed
+                 return;
+            }
 
-            const NextDisabledButtons = this.DisButtons[i].slice();   // --- Copy the values and not the references!
+            // --- Copy the values and not the references!
+            const NextDisabledButtons = this.DisButtons[i].slice();
 
             // --- Special Cases
             if (this.OpenedBrackets === 0) { NextDisabledButtons.push(")"); }
             if (this.NumberStatus.active) {
-                if (this.NumberStatus.decimaldot) { NextDisabledButtons.push("."); } else if (this.NumberStatus.zerostarted) { NextDisabledButtons.push("7", "8", "9", "4", "5", "6", "1", "2", "3", "0"); }
+                if (this.NumberStatus.decimaldot) {
+                     NextDisabledButtons.push(".");
+                } else if (this.NumberStatus.zerostarted) {
+                     NextDisabledButtons.push("7", "8", "9", "4", "5", "6", "1", "2", "3", "0");
+                }
             }
 
             // --- Set the new state to update and re-render the component
             this.setState(
-            {
-                EquationText: this.state.EquationText + this.GetButtonFinalText(i),
-                CurrentDisabledButtons: NextDisabledButtons,
-                OpenBrackets: this.OpenedBrackets,
-                NumberStatus: this.NumberStatus.Clone(),
-                DefaultValues: this.DefaultValues.slice(),
-            });
+                {
+                    CurrentDisabledButtons: NextDisabledButtons,
+                    DefaultValues: this.DefaultValues.slice(),
+                    EquationText: this.state.EquationText + this.GetButtonFinalText(i),
+                    NumberStatus: this.NumberStatus.Clone(),
+                    OpenBrackets: this.OpenedBrackets,
+                });
 
             this.StatesHistory.unshift(this.state);    // --- Save the last state at beginning of our history array
         } else {
@@ -259,13 +260,20 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     public generateButtons(from: number, to: number) {
         const elements = [];
         for (let i = from; i < to; i++) {
-            elements.push(<CreatorButton text={this.AllButtons[i]} disabled={this.state.CurrentDisabledButtons.includes(this.AllButtons[i])} onClick={() => this.OnButtonClick(i)} />);
+            elements.push(
+                <CreatorButton
+                    text={this.AllButtons[i]}
+                    disabled={this.state.CurrentDisabledButtons.includes(this.AllButtons[i])}
+                    onClick={() => this.OnButtonClick(i)}
+                />,
+            );
         }
         return elements;
     }
 
     public OnDropdownClicked(EQID: any) {
-        const NextDisabledButtons = this.DisButtons[this.AllButtons.indexOf("X")].slice();   // --- Copy the values and not the references!
+        // --- Copy the values and not the references!
+        const NextDisabledButtons = this.DisButtons[this.AllButtons.indexOf("X")].slice();
 
         // --- Special Cases
         if (this.OpenedBrackets === 0) { NextDisabledButtons.push(")"); }
@@ -273,11 +281,11 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         // --- Set the new state to update and re-render the component
         this.setState(
             {
-                EquationText: this.state.EquationText + "EQ(" + EQID + ")",
                 CurrentDisabledButtons: NextDisabledButtons,
-                OpenBrackets: this.OpenedBrackets,
-                NumberStatus: this.NumberStatus.Clone(),
                 DefaultValues: this.DefaultValues.slice(),
+                EquationText: this.state.EquationText + "EQ(" + EQID + ")",
+                NumberStatus: this.NumberStatus.Clone(),
+                OpenBrackets: this.OpenedBrackets,
             });
 
         this.StatesHistory.unshift(this.state);    // --- Save the last state at beginning of our history array
@@ -289,11 +297,30 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         .then((response) => response.json() as Promise<IRestNestedEquation[]>)
         .then((data) => { this.setState({ EquationsList: data }); });
 
+        const dropdownMenu = this.state.EquationsList.map((item) => (
+            <li>
+                <a
+                    className="eq-nav-link"
+                    onClick={() => this.OnDropdownClicked(item.main.id)}
+                >
+                    {`${item.main.description} (${item.main.equation})`}
+                </a>
+            </li>
+        ));
+
         return (
             <div className="dropdown">
-                <button className="creatorbutton equationddlbutton dropdown-toggle" type="button" data-toggle="dropdown" disabled={this.state.CurrentDisabledButtons.includes("X")}>Reference an Equation <span className="caret"></span></button>
+                <button
+                    className="creatorbutton equationddlbutton dropdown-toggle"
+                    type="button"
+                    data-toggle="dropdown"
+                    disabled={this.state.CurrentDisabledButtons.includes("X")}
+                >
+                    Reference an Equation
+                    <span className="caret"/>
+                </button>
                 <ul className="dropdown-menu scrollable-menu">
-                    {this.state.EquationsList.map((item) => <li><a className="eq-nav-link" onClick={() => this.OnDropdownClicked(item.main.id)}>{item.main.description + " (" + item.main.equation + ")"}</a></li>)}
+                    {dropdownMenu}
                 </ul>
             </div>
         );
@@ -334,19 +361,20 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     // -- Build a rest equation form the current state
     public GetRestEquation(): IRestEquation {
         const usedParams = this.GetUsedParams();
-        const params = [];
+        const params: IRestEquationParam[] = [];
         for (const param of usedParams) {
             const index = ["X", "Y", "Z"].indexOf(param);
-            params.push({ name: param, standard: this.state.DefaultValues[index] } as IRestEquationParam);
+            params.push({ name: param, description: param, standard: this.state.DefaultValues[index] });
         }
 
         const desc = this.Description === "" ? "Equation with no description" : this.Description;
 
-        if (this.props.match.params.id) {
-            return { id: this.props.match.params.id, description: desc, equation: this.GetEquationValue(), parameters: params } as IRestEquation;
-        } else {
-            return { id: -1, description: desc, equation: this.GetEquationValue(), parameters: params } as IRestEquation;
-        }
+        return {
+            description: desc,
+            equation: this.GetEquationValue(),
+            id: this.props.match.params.id || -1,
+            parameters: params,
+        };
     }
 
     // -- Get the used parameters
@@ -363,22 +391,31 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
     // -- Called on every change to fetch data from server
     public componentDidUpdate(prevProps: any, prevState: ICreatorState) {
-        if (!this.IsParsing && (prevState.EquationText !== this.state.EquationText || prevState.DefaultValues !== this.state.DefaultValues)) {
+        if (!this.IsParsing && (
+                prevState.EquationText !== this.state.EquationText ||
+                prevState.DefaultValues !== this.state.DefaultValues)
+            ) {
             this.setState({ Result: "Calculating ..." });
 
             // Post current equation to evaluator
             fetch("api/Equations/Evaluate",
-            {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(this.GetRestEquation()),
-            })
-            // Interpret answer as result, and update state
+                {
+                    body: JSON.stringify(this.GetRestEquation()),
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                })
+                // Interpret answer as result, and update state
             .then((response) => response.json() as Promise<IEvaluationResult>)
-            .then((data) => { if (data.success) { this.setState({ Result: data.value }); } else { this.setState({ Result: "Invalid equation" }); } });
+                .then((data) => {
+                     if (data.success) {
+                         this.setState({ Result: data.value });
+                     } else {
+                          this.setState({ Result: "Invalid equation" });
+                     }
+                });
         }
     }
 
@@ -386,12 +423,12 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         // Post current equation
         fetch("api/Equations/",
                 {
-                    method: "POST",
+                    body: JSON.stringify(this.GetRestEquation()),
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(this.GetRestEquation()),
+                    method: "POST",
                 })
             // Interpret answer as result, and update state
             .then((response) => {
@@ -454,24 +491,30 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                     i++;
                 }
 
-                this.IsParsing = (i < txt.length - 1);       // --- Just in case the Reference was at the end of equation
+                // --- Just in case the Reference was at the end of equation
+                this.IsParsing = (i < txt.length - 1);
                 this.OnDropdownClicked(EQID);
 
-                i++;        // --- Ignore the Closing bracket of EQ(id)
-                continue;   // --- Continue to the next char
+                // --- Ignore the Closing bracket of EQ(id)
+                i++;
+                // --- Continue to the next char
+                continue;
             } else {
                 index = this.AllButtons.indexOf(txt[i]);
             }
 
-            this.IsParsing = (i < txt.length - 1);       // --- We finish parsing when dealing with the last symbol.
+            // --- We finish parsing when dealing with the last symbol.
+            this.IsParsing = (i < txt.length - 1);
             this.OnButtonClick(index);
 
-            i++;    // --- increase the index!
+            // --- increase the index!
+            i++;
         }
 
         this.Description = Eq.description;
         this.ShouldRender = true;
-        this.setState({ Result: "Calculating ..." });   // --- So we force updating results.
+        // --- So we force updating results.
+        this.setState({ Result: "Calculating ..." });
         this.StatesHistory.shift();
     }
 
@@ -488,24 +531,74 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                 <div><h1>Equation Creator</h1></div>
                 <div className="creatorcontainerdiv">
                     <div className="creatorfirstdiv">
-                        <div><h4>Equation Description:</h4><input type="text" value={this.Description} className="form-control" onChange={(val) => this.UpdateDescription(val)} /></div>
-                        <div><h4>Current Input:</h4>
-                            <textarea readOnly={true} rows={1} className="form-control creatortextarea" value={this.state.EquationText} />
+                        <div>
+                            <h4>Equation Description:</h4>
+                            <input
+                                type="text"
+                                value={this.Description}
+                                className="form-control"
+                                onChange={(val) => this.UpdateDescription(val)}
+                            />
                         </div>
-                        <div><h4>Current Value:</h4>
-                            <textarea readOnly={true} rows={1} className="form-control creatortextarea" value={this.GetEquationValue()} /></div>
+                        <div>
+                            <h4>Current Input:</h4>
+                            <textarea
+                                readOnly={true}
+                                rows={1}
+                                className="form-control creatortextarea"
+                                value={this.state.EquationText}
+                            />
+                        </div>
+                        <div>
+                            <h4>Current Value:</h4>
+                            <textarea
+                                readOnly={true}
+                                rows={1}
+                                className="form-control creatortextarea"
+                                value={this.GetEquationValue()}
+                            />
+                        </div>
                         <div>
                             <table>
                                 <tr>
-                                    <td><h5>X Value:</h5><input type="number" name="DefaultValueX" defaultValue={this.DefaultValues[0].toString()} className="form-control creatordefaultvalue" onChange={(val) => this.UpdateDefaultValues(0, val)} /></td>
-                                    <td><h5>Y Value:</h5><input type="number" name="DefaultValueY" defaultValue={this.DefaultValues[1].toString()} className="form-control creatordefaultvalue" onChange={(val) => this.UpdateDefaultValues(1, val)} /></td>
-                                    <td><h5>Z Value:</h5><input type="number" name="DefaultValueZ" defaultValue={this.DefaultValues[2].toString()} className="form-control creatordefaultvalue" onChange={(val) => this.UpdateDefaultValues(2, val)} /></td>
+                                    <td>
+                                        <h5>X Value:</h5>
+                                        <input
+                                            type="number"
+                                            name="DefaultValueX"
+                                            defaultValue={this.DefaultValues[0].toString()}
+                                            className="form-control creatordefaultvalue"
+                                            onChange={(val) => this.UpdateDefaultValues(0, val)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <h5>Y Value:</h5>
+                                        <input
+                                            type="number"
+                                            name="DefaultValueY"
+                                            defaultValue={this.DefaultValues[1].toString()}
+                                            className="form-control creatordefaultvalue"
+                                            onChange={(val) => this.UpdateDefaultValues(1, val)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <h5>Z Value:</h5>
+                                        <input
+                                            type="number"
+                                            name="DefaultValueZ"
+                                            defaultValue={this.DefaultValues[2].toString()}
+                                            className="form-control creatordefaultvalue"
+                                            onChange={(val) => this.UpdateDefaultValues(2, val)}
+                                        />
+                                    </td>
                                 </tr>
                             </table>
                         </div>
                         <div><h4>Result: </h4></div>
                         <p><strong>{this.state.Result}</strong></p>
-                        <span className="text-danger" hidden={this.OpenedBrackets === 0}>Note: Some open brackets are still not closed!</span>
+                        <span className="text-danger" hidden={this.OpenedBrackets === 0}>
+                            Note: Some open brackets are still not closed!
+                        </span>
                     </div>
                     <div className="creatorseconddiv">
                         <div>{this.generateButtons(0, 4)}</div>
@@ -515,7 +608,16 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                         <div>{this.generateButtons(16, 20)}</div>
                         <div>{this.generateButtons(20, 24)}</div>
                         <div>{this.generateEquationsDropdown()}</div>
-                        <div><button type="button" className="btn btn-success creatorsavebarbutton" disabled={(this.state.EquationText === "") || (this.state.OpenBrackets > 0)} onClick={() => this.SaveEquation()}>Save Equation</button></div>
+                        <div>
+                            <button
+                                type="button"
+                                className="btn btn-success creatorsavebarbutton"
+                                disabled={(this.state.EquationText === "") || (this.state.OpenBrackets > 0)}
+                                onClick={() => this.SaveEquation()}
+                            >
+                                Save Equation
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

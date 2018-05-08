@@ -9,20 +9,16 @@ import { Home } from "./Home";
 /**
  * Test of drag and drop
  */
-interface dndState {
+interface IDndState {
     items: any[];
 }
 
 // Generate list items
-const getItems = function getItems(count: number) {
-  return Array.from({ length: count }, function(v, k) {
-    return k;
-  }).map(function(k) {
-    return {
-      id: "item-" + k,
-      content: "equation " + k,
-    };
-  });
+const getItems = (count: number) => {
+    return Array.from({ length: count }, (v, k) => k).map((k) => ({
+        content: "equation " + k,
+        id: "item-" + k,
+    }));
 };
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
@@ -34,27 +30,25 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 };
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-  // some basic styles for the items
-  userSelect: "none",
-  padding: 20,
-  margin: `0 0 ${8}px 0`,
+    // change background colour when dragging item
+    background: isDragging ? "lightgreen" : "lightgrey",
 
-  // change background colour when dragging item
-  background: isDragging ? "lightgreen" : "lightgrey",
+    // some basic styles for the items
+    margin: `0 0 ${8}px 0`,
+    padding: 20,
+    userSelect: "none",
 
-  // styles we need to apply on draggables
-  ...draggableStyle,
+    // styles we need to apply on draggables
+    ...draggableStyle,
 });
 
-const getListStyle = function getListStyle(isDraggingOver: any) {
-  return {
+const getListStyle = (isDraggingOver: any) => ({
     background: isDraggingOver ? "white" : "white",
     padding: 8,
     width: 500,
-  };
-};
+});
 
-export class Dndbox extends React.Component<RouteComponentProps<any>, dndState> {
+export class Dndbox extends React.Component<RouteComponentProps<any>, IDndState> {
   constructor(props: RouteComponentProps<any>) {
     super(props);
     this.state = {
@@ -81,48 +75,40 @@ export class Dndbox extends React.Component<RouteComponentProps<any>, dndState> 
   }
 
   public render() {
+        const innerDragableCallback = (item: any) => (providedInner: any, snapshotInner: any) => (
+            <div
+                ref={providedInner.innerRef}
+                {...providedInner.draggableProps}
+                {...providedInner.dragHandleProps}
+                style={getItemStyle(snapshotInner.isDragging, providedInner.draggableProps.style)}
+            >
+                {item.content}
+            </div>
+        );
 
-    return (
-     /*
-    <div>
-                   <h1>Most used equations</h1>
+        const itemMapper = (item: any, index: any) => (
+            <Draggable key={item.id} draggableId={item.id} index={index}>
+                {innerDragableCallback(item)}
+            </Draggable>
+        );
 
-               </div>
-      */
+        const dragableCallback = (provided: any, snapshot: any) => (
+            <div
+                ref={provided.innerRef}
+                // style={getListStyle(snapshot.isDraggingOver)}            >
+                {this.state.items.map(itemMapper)}
+                {provided.placeholder}
+            </div>
+        );
 
+        return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              // style={getListStyle(snapshot.isDraggingOver)}
-            >
-              {this.state.items.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style,
-                      )}
-                    >
-                      {item.content}
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
+            {dragableCallback}
         </Droppable>
       </DragDropContext>
-
     );
   }
-
 }
 
 /*

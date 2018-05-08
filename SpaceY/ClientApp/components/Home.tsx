@@ -32,13 +32,16 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
      * Render the main view and a loading placeholder when appropriate.
      */
     public render() {
+        const equations = this.state.loading
+            ? <p>Loading...</p>
+            : this.renderEquations(this.state.equations);
 
-        return <div>
-                   <h1>Most used equations</h1>
-                   {this.state.loading
-                       ? <p>Loading...</p>
-                       : this.renderEquations(this.state.equations)}
-               </div>;
+        return (
+            <div>
+                <h1>Most used equations</h1>
+                {equations}
+            </div>
+        );
     }
 
     /**
@@ -47,19 +50,25 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
      * @param equations The equations to render
      */
     public renderEquations(equations: IRestNestedEquation[]) {
-        return equations.map((equation) =>
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    <NavLink
-                        to={equation.main.id.toString() === this.props.match.params.id
-                            ? "/home"
-                            : `/home/${equation.main.id}`}
-                        activeClassName="active">
-                        {equation.main.description}
-                    </NavLink>
+        return equations.map((equation) => {
+            const navLink = equation.main.id.toString() === this.props.match.params.id
+                ? "/home"
+                : `/home/${equation.main.id}`;
+
+            return (
+                <div key="equation panel" className="panel panel-default">
+                    <div className="panel-heading">
+                        <NavLink
+                            to={navLink}
+                            activeClassName="active"
+                        >
+                            {equation.main.description}
+                        </NavLink>
+                    </div>
+                    {this.renderCollapsibleEquation(equation)}
                 </div>
-                {this.renderCollapsibleEquation(equation)}
-            </div>);
+            );
+        });
     }
 
     /**
@@ -71,15 +80,18 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
         if (equation.main.id.toString() !== this.props.match.params.id) {
             return <div className="panel-collapse collapse" aria-expanded="false"/>;
         }
-        return <div className="panel-collapse collapse in" aria-expanded="true">
-                   <div className="panel-body">
-                       <p>
-                           <NavLink to={`/equations/${equation.main.id}`} activeClassName="active">
-                               Go to equation
-                           </NavLink>
-                       </p>
-                       <Equation {...equation}/>
-                   </div>
-               </div>;
+
+        return (
+            <div className="panel-collapse collapse in" aria-expanded="true">
+                <div className="panel-body">
+                    <p>
+                        <NavLink to={`/equations/${equation.main.id}`} activeClassName="active">
+                            Go to equation
+                        </NavLink>
+                    </p>
+                    <Equation {...equation}/>
+                </div>
+            </div>
+        );
     }
 }
