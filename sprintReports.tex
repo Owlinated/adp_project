@@ -295,7 +295,7 @@ In that sense we deviated from what the sprint commitment explicitly said, since
         \hline
         Implement drag and drop functionality & 20 & Kevin: 10h \\
         \hline
-        Verification of the equations & 20 & Florian, Miray \\
+        Store and evaluate equations & NA & Florian, Miray: 5h each\\
         \hline        
         Equations with editable parameters & 8 & Abdullah, Florian: 4h each \\
         \hline        
@@ -305,9 +305,11 @@ In that sense we deviated from what the sprint commitment explicitly said, since
         \hline        
         Planning and setting up the planning poker session & NA & Fredrik 1h \\
         \hline        
+        Modification of redundant code & NA & Tingting: 4h \\
+        \hline        
         Writing the report & NA & 2.5h per member \\
         \hline        
-        Creating a page for showing all equations & 2 & Fredrik 2+xh \\
+        Creating a page for showing all equations & 2 & Fredrik 4h \\
         \hline        
         Evaluation of equations & NA & Filip: 4h \\
         \hline        
@@ -379,6 +381,96 @@ During the retrospective for the second sprint issues with communication within 
     \item Coding standards/Definition of done
     \item Proper pair programming 
 \end{itemize}
+
+
+\section{Sprint 4 Log}
+
+\subsection{Commitment}
+
+\begin{itemize}
+    \item Create ability to change variable values before evaluating equation
+    \item Make it possible to use equations as variables (equations within equations as references)
+    \item Allow existing equations to be edited
+\end{itemize}
+
+\subsection{Work done}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{0.40\textwidth}|l|p{0.40\textwidth}|}
+        \hline
+        \textbf{Task} & \textbf{Time estimated(Story points)} & \textbf{Time spent per member}  \\
+        \hline
+        Configuring project for front-end testing & 3 & Filip: 7h  \\
+        \hline
+        Writing tests for frontend & 10 & Filip: 3h  \\
+        \hline
+        Equation references & 3 & Abdullah, Florian: 3h each  \\
+        \hline        
+        Support for variables and descriptions & 5 & Miray, Florian: 5h each  \\
+        \hline        
+        Allow existing equations to be edited & 5 & Abdullah, Tingting: 5h each  \\   
+        \hline
+        Drag \& Drop for existing equations & 3 & Kevin: 5h  \\
+        \hline
+        Refactoring old code & 5 & Fredrik: 4h  \\
+        \hline
+        Unit tests for backend & 10 & Fredrik: 5h  \\
+        \hline
+        Writing the report & NA & 2h per member  \\
+        \hline        
+             
+        
+    \end{tabular}
+    \caption{Work done by each team member during the sprint}
+    \label{tab:my_label}
+\end{table}
+
+
+\subsection{Reflections}
+
+
+\subsubsection{Sprint Commitment \& Planning}
+
+Like in every sprint, we met with the product owner to decide on the sprint commitment for the upcoming sprint. Something that we realized this time was that the product owner was trying to get us to commit to more than what we thought we could get done. We explained our point of view and said no to committing to anything more than what we thought was reasonable for this sprint. 
+
+We then had a group meeting where we discussed the tasks we had committed to for the upcoming sprint. We added them to the sprint backlog, created issues of them in the Github issue tracker and the tasks were self-assigned to different members of the group. 
+
+\subsubsection{Collective code ownership \& CI}
+
+We continued with the practice of collective code ownership and continuous integration through git and Travis. At this point our work-flow in git was working quite well with different branches being used for different tasks and then merged with the master. We also realized that it was unnecessary for Travis to include files in the build that are not part of the build, like the report file. 
+
+The collective code ownership has been useful in that it enables and even encourages everyone in the group to contribute towards the final product. An obvious problem with it is that it can result in multiple people editing the same part of the code, causing merge conflicts. We have not had that many problems with it in this project, one reason for this is that we have created tasks that are clearly defined and separate from each other. However, for the cases where people shared the same task, they were able to resolve conflicts (if any) by keeping up with the code related to the task itself and merging the differences between branches to keep the project updated and working properly.
+
+\subsubsection{Stand-up Meetings}
+
+The semi-daily meetings over Slack that we started doing last sprint were continued this sprint. These meetings function as stand-up meetings where everyone in the group tells the rest of the group what they have done, what they are going to do and if they need help with anything. This has helped our communication and made it easier to keep track of what is going on in the sprint. It also prevents issues from being undiscovered before it is too late. For example if someone has not made any progress on their task, then the entire group will know and have time to sort out the problem. 
+
+This practice also helps facilitate other agile practices. For example helping keep a sustainable pace since everyone in the group knows what is going on in the project, or by allowing problems with other practices like the collective code ownership to become known and solved. 
+
+\subsubsection{Small Releases}
+
+Small releases is an agile practice that we have been doing throughout the project. At the end of every sprint we have delivered a new version of the application for the sprint acceptance test with the product owner. We have adhered to the idea that every release should make sense as a whole and provide some sort of value to the product owner. This means that the application is developed in vertical slices so that the progress is visible on the user end for every release. It enables us to show the functionality to the product owner for every release, which would not be possible if we only worked on the back-end for an entire sprint for example.
+
+\subsubsection{Test-Driven Development}
+
+During the last sprint we decided that we wanted to try test-driven or test-first development in this sprint. We created issues and backlog items for writing tests for the front-end and for the back-end. One difficulty with this was that it is difficult to define tests for certain things, for example for user interface parts of the front-end.
+
+
+\subsubsection{Coding Standards}
+
+Towards the end of the last sprint we implemented a way to assert that everybody sticks to our coding standards. We added a Lint pass to our build process, so the build will fail if the conventions are violated. For those of us using IDEs, these errors will show up as we code, making it easy to fix the code style as we go.
+We have kept using this process for this entire sprint and as a result our code style is very consistent.
+We are planning on introducing a similar process for our front-end code. However, we did not want to do this within the sprint, due to the large number of possible conflicts.
+
+\subsubsection{Refactoring}
+
+Since we have acquired more knowledge during this stage of the project and since we have received more information from the customer there was a need for refactoring during this sprint as well. Fortunately the previously made design decisions that needed improvement were still mostly confined within separate modules so the process was for the most part painless. We believe that the nature of this particular type of project lends itself quite well to this type of development whereas in a project in which the modules have more complex relationships and where performance is more important it would have been more difficult to achieve a good result without early design. 
+
+\subsubsection{Pair Programming}
+
+We have programmed in pairs earlier in the project but we had not done so in a structured way and so we decided that we wanted to try doing that during this sprint. Within the workshop we had on May 2nd, every two members sharing the same task worked together in a way which one of the members took the responsibility of explaining their ideas and sharing them loudly before turning them into a code while the other member took the responsibility of checking the proposed ideas, suggest changes that may suite the task better along with assessing the quality of the code being written by the first member. The members used to switch roles based on their abilities of writing code with the used technologies. Both members applying this technique reported that the productivity were higher compared to coding by themselves as discussing ideas before turning them into code enabled them to check the feasibility and correctness of these ideas and eliminated some of the future time-consuming changes.   
 
 
 \section{Postmortem}
