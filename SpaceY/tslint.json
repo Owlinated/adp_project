@@ -1,5 +1,7 @@
 {
-    "extends": ["tslint:latest", "tslint-react"],
-    "rules": {
-    }
+  "extends": ["tslint:latest", "tslint-react"],
+  "rules": {
+    "no-implicit-dependencies": false,
+    "jsx-no-lambda": false
   }
+}
