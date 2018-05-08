@@ -1,4 +1,4 @@
-﻿import { IRestEquation } from "./IRestEquation"
+﻿import { IRestEquation } from "./IRestEquation";
 
 export interface IRestNestedEquation {
     main: IRestEquation;

@@ -25,7 +25,7 @@ export class EquationDetail extends React.Component<RouteComponentProps<any>, IE
      * Update the displayed equation when its id changes.
      * This can be necessary, when switching between equations.
      */
-    componentDidUpdate(prevProps: RouteComponentProps<any>, prevState: IEquationDetailState) {
+    public componentDidUpdate(prevProps: RouteComponentProps<any>, prevState: IEquationDetailState) {
         if (prevProps.match.params.id !== this.props.match.params.id) {
             this.fetchEquation();
         }
@@ -34,11 +34,11 @@ export class EquationDetail extends React.Component<RouteComponentProps<any>, IE
     /**
      * Fetch the current equation from the server.
      */
-    fetchEquation() {
+    public fetchEquation() {
         this.setState({ loading: true });
         fetch(`api/Equations/${this.props.match.params.id}`)
-            .then(response => response.json() as Promise<IRestNestedEquation>)
-            .then(data => {
+            .then((response) => response.json() as Promise<IRestNestedEquation>)
+            .then((data) => {
                 this.setState({ equation: data, loading: false });
             });
     }
@@ -46,17 +46,21 @@ export class EquationDetail extends React.Component<RouteComponentProps<any>, IE
     /**
      *  Display the equation and all interaction elements.
      */
-    render() {
+    public render() {
         if (this.state.loading) {
-            return <div>
-                <p>Loading..</p>
-            </div>;
+            return (
+                <div>
+                    <p>Loading..</p>
+                </div>
+            );
         }
 
         const equation = this.state.equation as IRestNestedEquation;
-        return <div>
-            <h1>{equation.main.description}</h1>
-            <Equation {...equation}/> 
-        </div>;
+        return (
+            <div>
+                <h1>{equation.main.description}</h1>
+                <Equation {...equation}/>
+            </div>
+        );
     }
 }
