@@ -23,6 +23,7 @@ namespace SpaceY.Core
             Parameters = parameters ?? new List<RestEquationParam>();
             References = references ?? new List<Equation>();
             Expression = new Expression(serialized);
+            Counter = 1;    //--- We start by one because when we create new equations the evaluation will increase counter by one.
         }
 
         /// <summary>
@@ -54,6 +55,11 @@ namespace SpaceY.Core
         /// Gets all referenced equations.
         /// </summary>
         public IList<Equation> References { get; }
+
+        /// <summary>
+        /// Gets or sets the equation's identifier.
+        /// </summary>
+        public int Counter { get; set; }
 
         /// <summary>
         /// Determine the equations value

@@ -71,12 +71,12 @@ namespace SpaceY.DataAccess
         /// <summary>
         /// Gets list of the most used stored equations
         /// </summary>
-        public IQueryable<Equation> Equations => equations.Take(4).AsQueryable();
+        public IQueryable<Equation> Equations => equations.OrderByDescending(x => x.Counter).Take(4).AsQueryable();
 
         /// <summary>
         /// Gets list of all stored equations
         /// </summary>
-        public IQueryable<Equation> AllEquations => equations.AsQueryable();
+        public IQueryable<Equation> AllEquations => equations.OrderBy(x => x.Id).AsQueryable();
 
         /// <summary>
         /// Create an equation from the interface type.
@@ -123,6 +123,20 @@ namespace SpaceY.DataAccess
         public void DeleteEquation(int id)
         {
             equations.RemoveAll(x => x.Id.Equals(id));
+        }
+
+        /// <summary>
+        /// Delete an equation from the store.
+        /// </summary>
+        public void IncreseEquationCounter(int id)
+        {
+            try
+            {
+                equations.Where(x => x.Id.Equals(id)).First().Counter++;
+            }
+            catch
+            {
+            }
         }
     }
 }
