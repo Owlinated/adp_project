@@ -71,6 +71,18 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
         });
     }
 
+    public DeleteEquation(eqid: number) {
+        if (confirm("Are you sure yoy want to permanently delete this equation?")) {
+            fetch(`api/Equations/${eqid}/Delete?all=false`,
+                {
+                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    method: "POST",
+                })
+                .then((response) => response.json() as Promise<IRestNestedEquation[]>)
+                .then((data) => { this.setState({ equations: data, loading: false }); });
+        }
+    }
+
     /**
      * Render a single equations detail view.
      * Only render it, if it is selected.
@@ -85,9 +97,28 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
             <div className="panel-collapse collapse in" aria-expanded="true">
                 <div className="panel-body">
                     <p>
-                        <NavLink to={`/equations/${equation.main.id}`} activeClassName="active">
-                            Go to equation
+                        <NavLink
+                            to={`/equations/${equation.main.id}`}
+                            activeClassName="active"
+                            className="btn-link"
+                        >
+                        Open
                         </NavLink>
+                        &nbsp;|&nbsp;
+                        <NavLink
+                            to={`/equationcreator/${equation.main.id}`}
+                            activeClassName="active"
+                            className="btn-link"
+                        >
+                        Update
+                        </NavLink>
+                        &nbsp;|&nbsp;
+                        <a
+                            onClick={() => this.DeleteEquation(equation.main.id)}
+                            className="btn-link eq-nav-link"
+                        >
+                        Delete
+                        </a>
                     </p>
                     <Equation {...equation}/>
                 </div>

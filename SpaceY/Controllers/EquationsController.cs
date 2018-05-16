@@ -106,16 +106,16 @@ namespace SpaceY.Controllers
         /// Compute the value of an equation with the specified or default parameters.
         /// </summary>
         [HttpPost("{id}/[action]")]
-        public IEnumerable<RestNestedEquation> Delete(int id)
+        public IEnumerable<RestNestedEquation> Delete(int id, bool all)
         {
             try
             {
                 EquationStore.DeleteEquation(id);
-                return EquationStore.AllEquations.AsEnumerable().Select(ConvertToNested);
+                return List(all);
             }
             catch
             {
-                return EquationStore.AllEquations.AsEnumerable().Select(ConvertToNested);
+                return List(all);
             }
         }
 

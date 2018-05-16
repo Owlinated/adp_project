@@ -69,8 +69,11 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
 
     public DeleteEquation(eqid: number) {
         if (confirm("Are you sure yoy want to permanently delete this equation?")) {
-            fetch(`api/Equations/${eqid}/Delete`,
-                    { method: "POST", headers: { "Accept": "application/json", "Content-Type": "application/json" } })
+            fetch(`api/Equations/${eqid}/Delete?all=true`,
+                {
+                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    method: "POST",
+                })
             .then((response) => response.json() as Promise<IRestNestedEquation[]>)
             .then((data) => { this.setState({ equations: data, loading: false }); });
         }
