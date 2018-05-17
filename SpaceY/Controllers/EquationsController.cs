@@ -120,6 +120,15 @@ namespace SpaceY.Controllers
             }
         }
 
+        /// <summary>
+        /// Move equation with <paramref name="id"/> to index <paramref name="index"/>.
+        /// </summary>
+        [HttpGet("[action]")]
+        public void Reorder(int id, int index)
+        {
+            EquationStore.Reorder(id, index);
+        }
+
         private static RestNestedEquation ConvertToNested(Equation equation)
         {
             return new RestNestedEquation

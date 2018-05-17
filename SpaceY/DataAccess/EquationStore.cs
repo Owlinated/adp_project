@@ -23,16 +23,17 @@ namespace SpaceY.DataAccess
         /// </summary>
         public EquationStore()
         {
-            AddEquation(new Equation("a", "1 + 2"));
-            AddEquation(new Equation("b", "3 + 5"));
-            AddEquation(new Equation("c", "Sin(0)"));
-            AddEquation(new Equation("d", "1 + 2 + 3 + 4 + 5"));
-            AddEquation(new Equation("e", "7 * 7"));
-            AddEquation(new Equation("l", "1 + 2"));
-            AddEquation(new Equation("o", "3 + 5"));
-            AddEquation(new Equation("p", "Sin(0)"));
-            AddEquation(new Equation("u", "1 + 2 + 3 + 4 + 5"));
-            var equation1 = new Equation("y", "7 * 7");
+            AddEquation(new Equation("Simple plus V1", "1 + 2"));
+            AddEquation(new Equation("Simple plus V2", "3 + 5"));
+            AddEquation(new Equation("Simple Expression V1", "Sin(0)"));
+            AddEquation(new Equation("Simple plus V3", "1 + 2 + 3 + 4 + 5"));
+            AddEquation(new Equation("Simple Multiplication V1", "7 * 7"));
+            AddEquation(new Equation("Simple plus V4", "5 + 2"));
+            AddEquation(new Equation("Simple plus V5", "359780 + 5.5"));
+            AddEquation(new Equation("Simple Expression V2", "Cos(0)"));
+            AddEquation(new Equation("Simple plus V6", "2 + 4 + 6 + 8 + 9"));
+
+            var equation1 = new Equation("Simple Multiplication V2", "5 * 7");
             AddEquation(equation1);
 
             var parameters2 = new[]
@@ -45,7 +46,7 @@ namespace SpaceY.DataAccess
                 }
             };
             var equation2 = new Equation(
-                "x",
+                "Referencing Example",
                 serialized: $"Ref({equation1.Id}) * Var(0) + 1",
                 parameters: parameters2,
                 references: new[] { equation1 });
@@ -61,7 +62,7 @@ namespace SpaceY.DataAccess
                 }
             };
             var equation3 = new Equation(
-                "r",
+                "Complicated Referencing Example",
                 serialized: $"Ref({equation1.Id}) + Ref({equation2.Id}) + 3.1415",
                 parameters: parameters2,
                 references: new[] { equation1, equation2 });
@@ -76,7 +77,7 @@ namespace SpaceY.DataAccess
         /// <summary>
         /// Gets list of all stored equations
         /// </summary>
-        public IQueryable<Equation> AllEquations => equations.OrderBy(x => x.Id).AsQueryable();
+        public IQueryable<Equation> AllEquations => equations.AsQueryable();
 
         /// <summary>
         /// Create an equation from the interface type.
@@ -113,8 +114,10 @@ namespace SpaceY.DataAccess
         /// </summary>
         public void UpdateEquation(Equation equation)
         {
-            this.DeleteEquation(equation.Id);
-            equations.Add(equation);
+            var updated = equations.FirstOrDefault(eq => eq.Id == equation.Id)
+                ?? throw new System.ArgumentOutOfRangeException(nameof(equation));
+            var index = equations.IndexOf(updated);
+            equations[index] = equation;
         }
 
         /// <summary>
@@ -137,6 +140,17 @@ namespace SpaceY.DataAccess
             catch
             {
             }
+        }
+
+        /// <summary>
+        /// Move equation with <paramref name="id"/> to <paramref name="index"/>.
+        /// </summary>
+        public void Reorder(int id, int index)
+        {
+            var removed = equations.FirstOrDefault(equation => equation.Id == id)
+                ?? throw new System.ArgumentOutOfRangeException(nameof(id));
+            equations.Remove(removed);
+            equations.Insert(index, removed);
         }
     }
 }

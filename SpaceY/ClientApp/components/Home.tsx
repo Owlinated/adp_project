@@ -5,7 +5,6 @@ import { DragSource } from "react-dnd";
 import { RouteComponentProps } from "react-router";
 import { NavLink } from "react-router-dom";
 import { IRestNestedEquation } from "../interface/IRestNestedEquation";
-import { Dndbox } from "./Dndbox";
 import { Equation } from "./Equation";
 
 interface IHomeState {
@@ -38,7 +37,7 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
 
         return (
             <div>
-                <h1>Most used equations</h1>
+                <h1>Most Used Equations</h1>
                 {equations}
             </div>
         );
