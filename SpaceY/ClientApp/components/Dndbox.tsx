@@ -6,20 +6,13 @@ import { IRestNestedEquation } from "../interface/IRestNestedEquation";
 import { Equation } from "./Equation";
 import { Home } from "./Home";
 
-/**
- * Test of drag and drop
- */
-interface IDndState {
-    items: any[];
-}
+import "isomorphic-fetch";
+import { NavLink } from "react-router-dom";
 
-// Generate list items
-const getItems = (count: number) => {
-    return Array.from({ length: count }, (v, k) => k).map((k) => ({
-        content: "equation " + k,
-        id: "item-" + k,
-    }));
-};
+interface IDndState {
+    equations: IRestNestedEquation[];
+    loading: boolean;
+}
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
@@ -29,33 +22,21 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
   return result;
 };
 
-const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-    // change background colour when dragging item
-    background: isDragging ? "lightgreen" : "lightgrey",
-
-    // some basic styles for the items
-    margin: `0 0 ${8}px 0`,
-    padding: 20,
-    userSelect: "none",
-
-    // styles we need to apply on draggables
-    ...draggableStyle,
-});
-
-const getListStyle = (isDraggingOver: any) => ({
-    background: isDraggingOver ? "white" : "white",
-    padding: 8,
-    width: 500,
-});
-
 export class Dndbox extends React.Component<RouteComponentProps<any>, IDndState> {
   constructor(props: RouteComponentProps<any>) {
-    super(props);
-    this.state = {
-      items: getItems(10),
-    };
-    this.onDragEnd = this.onDragEnd.bind(this);
+        super(props);
+        this.state = { equations: [], loading: true };
+        this.onDragEnd = this.onDragEnd.bind(this);
+        this.getItems();
   }
+
+  public getItems() {
+      fetch(`api/equations?all=true`)
+          .then((response) => response.json() as Promise<IRestNestedEquation[]>)
+          .then((data) => {
+              this.setState({ equations: data, loading: false });
+          });
+    }
 
   public onDragEnd(result: any) {
     // dropped outside the list
@@ -64,30 +45,30 @@ export class Dndbox extends React.Component<RouteComponentProps<any>, IDndState>
     }
 
     const items = reorder(
-      getItems(10),
+          this.state.equations,
       result.source.index,
       result.destination.index,
     );
 
     this.setState({
-      items,
-    });
-  }
+          equations: items,
+        });
+    }
 
   public render() {
+
         const innerDragableCallback = (item: any) => (providedInner: any, snapshotInner: any) => (
             <div
                 ref={providedInner.innerRef}
                 {...providedInner.draggableProps}
                 {...providedInner.dragHandleProps}
-                style={getItemStyle(snapshotInner.isDragging, providedInner.draggableProps.style)}
             >
-                {item.content}
+                {this.renderEquations(item)}
             </div>
         );
 
         const itemMapper = (item: any, index: any) => (
-            <Draggable key={item.id} draggableId={item.id} index={index}>
+            <Draggable key={item.main.id} draggableId={item.main.id} index={index}>
                 {innerDragableCallback(item)}
             </Draggable>
         );
@@ -95,8 +76,9 @@ export class Dndbox extends React.Component<RouteComponentProps<any>, IDndState>
         const dragableCallback = (provided: any, snapshot: any) => (
             <div
                 ref={provided.innerRef}
-                // style={getListStyle(snapshot.isDraggingOver)}            >
-                {this.state.items.map(itemMapper)}
+                // style={getListStyle(snapshot.isDraggingOver)}
+            >
+                {this.state.equations.map(itemMapper)}
                 {provided.placeholder}
             </div>
         );
@@ -108,23 +90,88 @@ export class Dndbox extends React.Component<RouteComponentProps<any>, IDndState>
         </Droppable>
       </DragDropContext>
     );
-  }
-}
-
-/*
-
-export class Dndbox extends React.Component<RouteComponentProps<any>> {
-    constructor(props: RouteComponentProps<any>) {
-        super(props);
-        this.state = { currentCount: 0 };
     }
 
-    render() {
-        return <div>
-                   <h1>TEST</h1>
+    /**
+     * Render a list of equations in panels.
+     * Add links for expanding and collapsing each equation.
+     * @param equations The equations to render
+     */
+  public renderEquations(equation: IRestNestedEquation) {
 
-               </div>;
+            const navLink = equation.main.id.toString() === this.props.match.params.id
+                ? "/Dndbox/"
+                : `/Dndbox/${equation.main.id}`;
+
+            return (
+                <div key={equation.main.id} className="panel panel-default">
+                    <div className="panel-heading">
+                        <NavLink
+                            to={navLink}
+                            activeClassName="active"
+                        >
+                            {equation.main.description}
+                        </NavLink>
+                    </div>
+                    {this.renderCollapsibleEquation(equation)}
+                </div>
+            );
+    }
+
+  public DeleteEquation(eqid: number) {
+        if (confirm("Are you sure yoy want to permanently delete this equation?")) {
+            fetch(`api/Equations/${eqid}/Delete?all=true`,
+                {
+                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    method: "POST",
+                })
+                .then((response) => response.json() as Promise<IRestNestedEquation[]>)
+                .then((data) => { this.setState({ equations: data, loading: false }); });
+        }
+    }
+
+    /**
+     * Render a single equations detail view.
+     * Only render it, if it is selected.
+     * @param equation The equation to render
+     */
+  public renderCollapsibleEquation(equation: IRestNestedEquation) {
+        if (equation.main.id.toString() !== this.props.match.params.id) {
+            return <div className="panel-collapse collapse" aria-expanded="false" />;
+        }
+        this.props.match.params.id = equation.main.id.toString();
+
+        return (
+            <div className="panel-collapse collapse in" aria-expanded="true">
+                <div className="panel-body">
+                    <p>
+                        <NavLink
+                            to={`/equations/${equation.main.id}`}
+                            activeClassName="active"
+                            className="btn-link"
+                        >
+                            Open
+                        </NavLink>
+                        &nbsp;|&nbsp;
+                        <NavLink
+                            to={`/equationcreator/${equation.main.id}`}
+                            activeClassName="active"
+                            className="btn-link"
+                        >
+                            Update
+                        </NavLink>
+                        &nbsp;|&nbsp;
+                        <a
+                            onClick={() => this.DeleteEquation(equation.main.id)}
+                            className="btn-link eq-nav-link"
+                        >
+                            Delete
+                        </a>
+                    </p>
+                    <Equation {...equation} />
+                </div>
+            </div>
+        );
     }
 
 }
-*/
