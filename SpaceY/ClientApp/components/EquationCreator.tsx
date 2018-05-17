@@ -78,6 +78,13 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
         // --- Check if we are in Edit mode and act accordingly
         this.StatesHistory = [this.state];
+
+        // -- Fetch the dropdown equations
+        fetch(`api/equations?all=true`)
+            .then((response) => response.json() as Promise<IRestNestedEquation[]>)
+            .then((data) => { this.setState({ EquationsList: data }); });
+
+        // --- Fetch the main equation
         this.FetchCurrentEquation();
     }
 
@@ -293,10 +300,6 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
     // --- Generate a drop down list of all available equations
     public generateEquationsDropdown() {
-        fetch(`api/equations?all=true`)
-        .then((response) => response.json() as Promise<IRestNestedEquation[]>)
-        .then((data) => { this.setState({ EquationsList: data }); });
-
         const dropdownMenu = this.state.EquationsList.map((item) => (
             <li>
                 <a
