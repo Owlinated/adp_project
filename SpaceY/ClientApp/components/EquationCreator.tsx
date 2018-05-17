@@ -467,6 +467,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     // --- This function Reloads the component using the text the current equation we want to edit
     public ReloadComponentByEquationText(Eq: IRestEquation) {
         const EqText = Eq.equation;
+        // todo use support/equationformatter.tsx
         const txt = EqText.replace(/\//g, "÷")
                         .replace(/\*/g, "×")
                         .replace(/v/g, "V")
