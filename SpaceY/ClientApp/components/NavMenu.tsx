@@ -22,7 +22,12 @@ export class NavMenu extends React.Component<{}, {}> {
                             <span className="icon-bar"/>
                             <span className="icon-bar"/>
                         </button>
-                        <Link className="navbar-brand" to={"/"}>SpaceY</Link>
+                        <Link className="navbar-brand" to={"/"} style={{height: "65px", fontSize: "30px"}}>
+                            <span style={{paddingRight: "10px"}}>
+                                <img height="32px" src="icon.png" />
+                            </span>
+                            SpaceY
+                        </Link>
                     </div>
                     <div className="clearfix"/>
                     <div className="navbar-collapse collapse">
