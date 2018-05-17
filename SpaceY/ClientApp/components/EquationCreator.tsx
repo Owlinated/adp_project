@@ -525,6 +525,9 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
     public UpdateDescription(val: any) {
         this.Description = val.target.value;
+        // --- Enforce rendering and show changes by calling set state
+        // --- This variable should not be stored in state to not get affected by the back button
+        this.setState({});
     }
 
     // --- The render function of our component
