@@ -39,19 +39,22 @@ export class Dndbox extends React.Component<RouteComponentProps<any>, IDndState>
     }
 
   public onDragEnd(result: any) {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
 
-    const items = reorder(
-          this.state.equations,
-      result.source.index,
-      result.destination.index,
-    );
+        const equation = this.state.equations[result.source.index];
+        fetch(`api/Equations/Reorder/?id=${equation.main.id}&index=${result.destination.index}`);
 
-    this.setState({
-          equations: items,
+        const items = reorder(
+            this.state.equations,
+            result.source.index,
+            result.destination.index,
+        );
+
+        this.setState({
+            equations: items,
         });
     }
 

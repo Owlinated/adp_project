@@ -76,7 +76,7 @@ namespace SpaceY.DataAccess
         /// <summary>
         /// Gets list of all stored equations
         /// </summary>
-        public IQueryable<Equation> AllEquations => equations.OrderBy(x => x.Id).AsQueryable();
+        public IQueryable<Equation> AllEquations => equations.AsQueryable();
 
         /// <summary>
         /// Create an equation from the interface type.
@@ -113,8 +113,10 @@ namespace SpaceY.DataAccess
         /// </summary>
         public void UpdateEquation(Equation equation)
         {
-            this.DeleteEquation(equation.Id);
-            equations.Add(equation);
+            var updated = equations.FirstOrDefault(eq => eq.Id == equation.Id)
+                ?? throw new System.ArgumentOutOfRangeException(nameof(equation));
+            var index = equations.IndexOf(updated);
+            equations[index] = equation;
         }
 
         /// <summary>
@@ -137,6 +139,17 @@ namespace SpaceY.DataAccess
             catch
             {
             }
+        }
+
+        /// <summary>
+        /// Move equation with <paramref name="id"/> to <paramref name="index"/>.
+        /// </summary>
+        public void Reorder(int id, int index)
+        {
+            var removed = equations.FirstOrDefault(equation => equation.Id == id)
+                ?? throw new System.ArgumentOutOfRangeException(nameof(id));
+            equations.Remove(removed);
+            equations.Insert(index, removed);
         }
     }
 }
