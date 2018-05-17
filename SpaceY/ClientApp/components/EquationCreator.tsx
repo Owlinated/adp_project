@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { IEvaluationResult } from "../interface/IEvaluationResult";
 import { IRestEquation } from "../interface/IRestEquation";
@@ -301,7 +301,9 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     // --- Generate a drop down list of all available equations
     public generateEquationsDropdown() {
         const dropdownMenu = this.state.EquationsList.map((item) => (
-            <li>
+            <li
+                hidden={item.main.id.toString() === this.props.match.params.id}
+            >
                 <a
                     className="eq-nav-link"
                     onClick={() => this.OnDropdownClicked(item.main.id)}
