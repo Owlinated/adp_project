@@ -539,7 +539,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
     // --- The render function of our component
     public render() {
-        if (!this.ShouldRender) { return (<div><h1>Equation Creator</h1><div><p>Loading..</p></div></div>); }
+        if (!this.ShouldRender) { return (<div><h2>Equation Creator</h2><div><p>Loading..</p></div></div>); }
 
         const formattedEquation =
             formatEquation(
@@ -548,7 +548,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
         return (
             <div>
-                <div><h1>Equation Creator</h1></div>
+                <div><h2>Equation Creator</h2></div>
                 <div className="creatorcontainerdiv">
                     <div className="creatorfirstdiv">
                         <div>

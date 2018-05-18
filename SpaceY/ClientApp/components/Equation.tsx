@@ -53,8 +53,9 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
 
         return (
             <div>
-            <h2>References</h2>
-            {this.props.references.map((reference) => this.renderReference(reference))}
+                <h3>References</h3>
+                {this.props.references.map((reference) => this.renderReference(reference))}
+                <h3>Main Equation</h3>
             </div>
         );
     }

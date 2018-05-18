@@ -37,7 +37,7 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
 
         return (
             <div>
-                <h1>Most Used Equations</h1>
+                <h2>Most Used Equations</h2>
                 {equations}
             </div>
         );
