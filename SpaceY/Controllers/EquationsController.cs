@@ -76,7 +76,8 @@ namespace SpaceY.Controllers
         [HttpPost("{id}/[action]")]
         public object Evaluate(int id, [FromBody]Dictionary<int, Dictionary<int, double>> parameterValues)
         {
-            EquationStore.IncreseEquationCounter(id);   //--- Each time we evaluate an already stored equation, we increase the usage counter.
+            // Each time we evaluate an already stored equation, we increase the usage counter.
+            EquationStore.IncreaseEquationCounter(id);
             return EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id)?.Evaluate(parameterValues)
                 ?? throw new ArgumentException(nameof(id));
         }

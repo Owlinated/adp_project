@@ -96,6 +96,16 @@ namespace SpaceY.DataAccess
                             .Where(reference => reference != null)
                             .ToList();
 
+            // Resolve references, until no more can be added or max depth is reached.
+            const int maxDepth = 100;
+            for (var i = 0; i < maxDepth; i++)
+            {
+                if (!AddReferences(references))
+                {
+                    break;
+                }
+            }
+
             // Create a new equation using the collected references and parameters
             return new Equation(restEquation.Description, restEquation.Equation, restEquation.Parameters, references);
         }
@@ -131,14 +141,15 @@ namespace SpaceY.DataAccess
         /// <summary>
         /// Delete an equation from the store.
         /// </summary>
-        public void IncreseEquationCounter(int id)
+        public void IncreaseEquationCounter(int id)
         {
             try
             {
-                equations.Where(x => x.Id.Equals(id)).First().Counter++;
+                equations.First(x => x.Id.Equals(id)).Counter++;
             }
             catch
             {
+                // Ignored
             }
         }
 
@@ -151,6 +162,23 @@ namespace SpaceY.DataAccess
                 ?? throw new System.ArgumentOutOfRangeException(nameof(id));
             equations.Remove(removed);
             equations.Insert(index, removed);
+        }
+
+        /// <summary>
+        /// Add references of <paramref name="sourceEquations"/> to the list.
+        /// </summary>
+        /// <returns>True if any references were added, false otherwise.</returns>
+        private bool AddReferences(List<Equation> sourceEquations)
+        {
+            var referenced = sourceEquations.SelectMany(equation => equation.References);
+            var added = referenced.Distinct().Except(sourceEquations).ToList();
+            if (!added.Any())
+            {
+                return false;
+            }
+
+            sourceEquations.InsertRange(index: 0, collection: added);
+            return true;
         }
     }
 }
