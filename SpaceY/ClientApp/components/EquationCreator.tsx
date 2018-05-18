@@ -4,6 +4,7 @@ import { IEvaluationResult } from "../interface/IEvaluationResult";
 import { IRestEquation } from "../interface/IRestEquation";
 import { IRestEquationParam } from "../interface/IRestEquationParam";
 import { IRestNestedEquation } from "../interface/IRestNestedEquation";
+import { formatEquation } from "../support/EquationFormatter";
 import { NumberStatus } from "./data/NumberStatus";
 
 // --- The creator interface which defines the data structure of our component
@@ -332,15 +333,19 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     }
 
     // --- Get the value of the current equation which should be sent to the backend
-    public GetEquationValue() {
+    public GetEquationValue(autoFix: boolean) {
         let equationtext = this.state.EquationText;
         let openBrackets = this.state.OpenBrackets;
 
         // Remove trailing operators
-        const trailingOperator = /([×÷\+\-\(\.]|sin|cos)$/;
-        while (equationtext.match(trailingOperator)) {
-            if (equationtext.match(/\($/)) { openBrackets--; }
-            equationtext = equationtext.replace(trailingOperator, "");
+        if (autoFix) {
+            const trailingOperator = /([×÷\+\-\(\.]|sin|cos)$/;
+            while (equationtext.match(trailingOperator)) {
+                if (equationtext.match(/\($/)) {
+                    openBrackets--;
+                }
+                equationtext = equationtext.replace(trailingOperator, "");
+            }
         }
 
         if (equationtext) {
@@ -354,8 +359,10 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                 .replace(/sin\(/gi, "Sin\(")
                 .replace(/cos\(/gi, "Cos\(")
                 .replace(/EQ/gi, "Ref");
-            for (let i = 0; i < openBrackets; ++i) {
-                result += ")";
+            if (autoFix) {
+                for (let i = 0; i < openBrackets; ++i) {
+                    result += ")";
+                }
             }
             return result;
         } else {
@@ -364,7 +371,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     }
 
     // -- Build a rest equation form the current state
-    public GetRestEquation(): IRestEquation {
+    public GetRestEquation(autoFix: boolean): IRestEquation {
         const usedParams = this.GetUsedParams();
         const params: IRestEquationParam[] = [];
         for (const param of usedParams) {
@@ -376,7 +383,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
         return {
             description: desc,
-            equation: this.GetEquationValue(),
+            equation: this.GetEquationValue(autoFix),
             id: this.props.match.params.id || -1,
             parameters: params,
         };
@@ -405,7 +412,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             // Post current equation to evaluator
             fetch("api/Equations/Evaluate",
                 {
-                    body: JSON.stringify(this.GetRestEquation()),
+                    body: JSON.stringify(this.GetRestEquation(true)),
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
@@ -428,7 +435,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         // Post current equation
         fetch("api/Equations/",
                 {
-                    body: JSON.stringify(this.GetRestEquation()),
+                    body: JSON.stringify(this.GetRestEquation(true)),
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
@@ -534,6 +541,11 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     public render() {
         if (!this.ShouldRender) { return (<div><h1>Equation Creator</h1><div><p>Loading..</p></div></div>); }
 
+        const formattedEquation =
+            formatEquation(
+                this.GetRestEquation(false),
+                this.state.EquationsList.map((equation) => equation.main));
+
         return (
             <div>
                 <div><h1>Equation Creator</h1></div>
@@ -549,21 +561,12 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                             />
                         </div>
                         <div>
-                            <h4>Current Input:</h4>
+                            <h4>Input:</h4>
                             <textarea
                                 readOnly={true}
                                 rows={1}
                                 className="form-control creatortextarea"
-                                value={this.state.EquationText}
-                            />
-                        </div>
-                        <div>
-                            <h4>Current Value:</h4>
-                            <textarea
-                                readOnly={true}
-                                rows={1}
-                                className="form-control creatortextarea"
-                                value={this.GetEquationValue()}
+                                value={formattedEquation}
                             />
                         </div>
                         <div>
