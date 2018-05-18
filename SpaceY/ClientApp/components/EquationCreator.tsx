@@ -346,14 +346,14 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         if (equationtext) {
             let result = equationtext
                 // Replace tokens with interface variants
-                .replace(/×/g, "*")
-                .replace(/÷/g, "/")
-                .replace(/X/g, `var(${this.GetUsedParams().indexOf("X")})`)
-                .replace(/Y/g, `var(${this.GetUsedParams().indexOf("Y")})`)
-                .replace(/Z/g, `var(${this.GetUsedParams().indexOf("Z")})`)
-                .replace(/sin\(/g, "Sin\(")
-                .replace(/cos\(/g, "Cos\(")
-                .replace(/EQ/g, "Ref");
+                .replace(/×/gi, "*")
+                .replace(/÷/gi, "/")
+                .replace(/X/gi, `Var(${this.GetUsedParams().indexOf("X")})`)
+                .replace(/Y/gi, `Var(${this.GetUsedParams().indexOf("Y")})`)
+                .replace(/Z/gi, `Var(${this.GetUsedParams().indexOf("Z")})`)
+                .replace(/sin\(/gi, "Sin\(")
+                .replace(/cos\(/gi, "Cos\(")
+                .replace(/EQ/gi, "Ref");
             for (let i = 0; i < openBrackets; ++i) {
                 result += ")";
             }
@@ -468,17 +468,16 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     public ReloadComponentByEquationText(Eq: IRestEquation) {
         const EqText = Eq.equation;
         // todo use support/equationformatter.tsx
-        const txt = EqText.replace(/\//g, "÷")
-                        .replace(/\*/g, "×")
-                        .replace(/v/g, "V")
-                        .replace(/Var\(0\)/g, "X")
-                        .replace(/Var\(1\)/g, "Y")
-                        .replace(/Var\(2\)/g, "Z")
-                        .replace(/Sin\(/g, "s")
-                        .replace(/Cos\(/g, "c")
-                        .replace(/Ref\(/g, "e")
-                        .replace(/ref\(/g, "e")
-                        .replace(/\s/g, "");
+        const txt = EqText.replace(/\//gi, "÷")
+                        .replace(/\*/gi, "×")
+                        .replace(/Var\(0\)/gi, "X")
+                        .replace(/Var\(1\)/gi, "Y")
+                        .replace(/Var\(2\)/gi, "Z")
+                        .replace(/Sin\(/gi, "s")
+                        .replace(/Cos\(/gi, "c")
+                        .replace(/Ref\(/gi, "e")
+                        .replace(/ref\(/gi, "e")
+                        .replace(/\s/gi, "");
 
         let i = 0;
         while (i < txt.length) {
