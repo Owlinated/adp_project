@@ -537,6 +537,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         return (
             <div>
                 <div><h1>Equation Creator</h1></div>
+                <hr />
                 <div className="creatorcontainerdiv">
                     <div className="creatorfirstdiv">
                         <div>
@@ -603,7 +604,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                             </table>
                         </div>
                         <div><h4>Result: </h4></div>
-                        <p><strong>{this.state.Result}</strong></p>
+                        <p id="result"><strong>{this.state.Result}</strong></p>
                         <span className="text-danger" hidden={this.OpenedBrackets === 0}>
                             Note: Some open brackets are still not closed!
                         </span>

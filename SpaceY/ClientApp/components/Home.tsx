@@ -38,6 +38,7 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
         return (
             <div>
                 <h1>Most Used Equations</h1>
+                <hr />
                 {equations}
             </div>
         );

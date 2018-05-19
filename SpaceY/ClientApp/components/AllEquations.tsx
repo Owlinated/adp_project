@@ -85,6 +85,7 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
         return (
             <div>
                 <h1>All Available Equations</h1>
+                <hr />
                 {loading}
                 <DragDropContext onDragEnd={this.onDragEnd}>
                     <Droppable droppableId="droppable">

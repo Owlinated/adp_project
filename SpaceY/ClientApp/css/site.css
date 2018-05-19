@@ -19,8 +19,44 @@
     z-index: 1;
 }
 
-.eq-nav-link { 
-    cursor: pointer; 
+.eq-nav-link {
+    cursor: pointer;
+}
+
+/* Equation Panel*/
+.panel, .panel-heading{
+    background-color: #EFEFEF !important;
+    border: 0px !important;
+    border-radius: 0px !important;
+    width: 50%;
+}
+
+.panel-body {
+    background-color: #DFDFDF;
+}
+
+.eqresult {
+    font-size: 1.5em;
+    border: 0px !important;
+    border-radius: 0px !important;
+    /* width: 50%; */
+    padding: 10px 15px;
+    background-color: #EFEFEF;
+}
+
+
+body {
+    background-color: #FEFEFE;
+}
+
+h1 {
+    color: #333333;
+}
+
+hr {
+    height: 1px;
+    background-color: lightgray;
+    width: 96%;
 }
 
 /* Equation Creator Styles */
@@ -50,33 +86,34 @@
 .creatorseconddiv {
     float: right;
     width: 35%;
+    background-color: #ffffff;
+    border-radius: 1%;
+    padding: 1%;
 }
 
 .creatorbutton {
-    background-color: #dcfee1;
-    border-color: black;
-    border-width: 1px;
+    background-color: #DCFEE1;
+    border: 1px solid black;
     color: black;
     font-size: 1.4em;
     padding: 9px 10px;
-    border-radius: 4px;
     transition-duration: 0.3s;
-    margin: 0.8%;
-    width: 23%;
+    width: 25%;
 }
 
 .equationddlbutton {
     font-size: 1.3em;
     padding: 7px 10px;
-    width: 97%;
+    width: 100%;
 }
 
 .creatorbutton:hover {
-    background-color: white; 
+    background-color: white;
 }
 
 .creatorbutton:disabled, creatorbutton[disabled] {
-    background-color: #ffdbdb;
+    background-color:  #FFE5E5;
+    color: #666666;
     cursor: not-allowed;
 }
 
@@ -87,13 +124,18 @@
 
 .dropdown-menu {
     margin: 3px;
-    width: 97%;
+    width: 100%;
 }
 
 .scrollable-menu {
     height: auto;
     max-height: 200px;
     overflow-x: hidden;
+}
+
+#result {
+    font-size: 3em;
+    line-height: 100%;
 }
 
 
@@ -117,7 +159,7 @@
     /* On small screens, convert the nav menu to a vertical sidebar */
     .main-nav {
         height: 100%;
-        width: calc(25% - 20px);
+        width: 15%;
     }
 
     .main-nav .navbar {

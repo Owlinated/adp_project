@@ -90,7 +90,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
     public renderEquation(equation: IRestEquation, isMain: boolean) {
         return (
             <div>
-                <p>{isMain ? `${equation.equation} = ${this.state.result}` : equation.equation}</p>
+                <p className="eqresult">{isMain ? `${equation.equation} = ${this.state.result}` : equation.equation}</p>
                 {equation.parameters.map((parameter, index) => this.renderParameter(equation, parameter, index))}
             </div>
         );
