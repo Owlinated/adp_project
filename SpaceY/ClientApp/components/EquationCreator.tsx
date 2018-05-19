@@ -77,16 +77,16 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             Result: "",
         };
 
-        // --- Check if we are in Edit mode and act accordingly
-        this.StatesHistory = [this.state];
-
-        // -- Fetch the dropdown equations
+        // --- Fetch the dropdown equations
         fetch(`api/equations?all=true`)
             .then((response) => response.json() as Promise<IRestNestedEquation[]>)
-            .then((data) => { this.setState({ EquationsList: data }); });
-
-        // --- Fetch the main equation
-        this.FetchCurrentEquation();
+            .then((data) => { this.setState({ EquationsList: data }); })
+            .then(() => {
+                // --- Save Initial State
+                this.StatesHistory = [this.state];
+                // --- Check if we are in Edit mode and act accordingly
+                this.FetchCurrentEquation();
+            });
     }
 
     // --- The following function defines the set of buttons that need to be disabled after pressing a certain button
@@ -379,7 +379,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             params.push({ name: param, description: param, standard: this.state.DefaultValues[index] });
         }
 
-        const desc = this.Description === "" ? "Equation with no description" : this.Description;
+        const desc = this.Description === "" ? "No description" : this.Description;
 
         return {
             description: desc,
@@ -468,6 +468,8 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         } else {
             this.IsParsing = false;
             this.ShouldRender = true;
+            // --- force updating results and rendering
+            this.setState({});
         }
     }
 
@@ -564,7 +566,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                             <h4>Input:</h4>
                             <textarea
                                 readOnly={true}
-                                rows={1}
+                                rows={2}
                                 className="form-control creatortextarea"
                                 value={formattedEquation}
                             />

@@ -105,19 +105,24 @@ namespace SpaceY.Controllers
         }
 
         /// <summary>
-        /// Compute the value of an equation with the specified or default parameters.
+        /// Delete an equation only if possible
         /// </summary>
-        [HttpPost("{id}/[action]")]
-        public IEnumerable<RestNestedEquation> Delete(int id, bool all)
+        [HttpGet("{id}/[action]")]
+        public bool Delete(int id)
         {
             try
             {
-                EquationStore.DeleteEquation(id);
-                return List(all);
+                if (!EquationStore.AllEquations.Any(e => e.References.Any(r => r.Id.Equals(id))))
+                {
+                    EquationStore.DeleteEquation(id);
+                    return true;
+                }
+
+                return false;
             }
             catch
             {
-                return List(all);
+                return false;
             }
         }
 

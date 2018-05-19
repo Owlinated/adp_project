@@ -41,8 +41,8 @@ namespace SpaceY.DataAccess
                 new RestEquationParam
                 {
                     Standard = 1.0,
-                    Description = "dummy",
-                    Name = "d"
+                    Description = "X",
+                    Name = "X"
                 }
             };
             var equation2 = new Equation(
@@ -57,8 +57,8 @@ namespace SpaceY.DataAccess
                 new RestEquationParam
                 {
                     Standard = 1.0,
-                    Description = "dummy",
-                    Name = "d"
+                    Description = "X",
+                    Name = "X"
                 }
             };
             var equation3 = new Equation(
