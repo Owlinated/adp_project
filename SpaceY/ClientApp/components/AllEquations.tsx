@@ -84,7 +84,7 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
 
         return (
             <div>
-                <h1>All Available Equations</h1>
+                <h2>All Equations</h2>
                 {loading}
                 <DragDropContext onDragEnd={this.onDragEnd}>
                     <Droppable droppableId="droppable">
@@ -121,13 +121,15 @@ export class AllEquations extends React.Component<RouteComponentProps<any>, IAll
 
     public DeleteEquation(eqid: number) {
         if (confirm("Are you sure yoy want to permanently delete this equation?")) {
-            fetch(`api/Equations/${eqid}/Delete?all=true`,
-                {
-                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
-                    method: "POST",
-                })
-                .then((response) => response.json() as Promise<IRestNestedEquation[]>)
-                .then((data) => { this.setState({ equations: data, loading: false }); });
+            fetch(`api/Equations/${eqid}/Delete`)
+                .then((response) => response.json() as Promise<boolean>)
+                .then((result) => {
+                    if (result) {
+                            this.getItems();
+                        } else {
+                            alert("Cannot delete equation because it is being referenced by another one.");
+                        }
+                    });
         }
     }
 

@@ -43,6 +43,10 @@
     <TypeScriptCompile Include="ClientApp\**\*.tsx" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="ClientApp\support\EquationFormatter.tsx" />
+  </ItemGroup>
+
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug'">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

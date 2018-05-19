@@ -20,6 +20,10 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
     constructor(props: RouteComponentProps<any>) {
         super(props);
         this.state = { equations: [], loading: true };
+        this.getItems();
+    }
+
+    public getItems() {
         fetch(`api/equations?all=false`)
             .then((response) => response.json() as Promise<IRestNestedEquation[]>)
             .then((data) => {
@@ -37,7 +41,7 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
 
         return (
             <div>
-                <h1>Most Used Equations</h1>
+                <h2>Most Used Equations</h2>
                 {equations}
             </div>
         );
@@ -72,13 +76,15 @@ export class Home extends React.Component<RouteComponentProps<any>, IHomeState> 
 
     public DeleteEquation(eqid: number) {
         if (confirm("Are you sure yoy want to permanently delete this equation?")) {
-            fetch(`api/Equations/${eqid}/Delete?all=false`,
-                {
-                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
-                    method: "POST",
-                })
-                .then((response) => response.json() as Promise<IRestNestedEquation[]>)
-                .then((data) => { this.setState({ equations: data, loading: false }); });
+            fetch(`api/Equations/${eqid}/Delete`)
+                .then((response) => response.json() as Promise<boolean>)
+                .then((result) => {
+                    if (result) {
+                        this.getItems();
+                    } else {
+                        alert("Cannot delete equation because it is being referenced by another one.");
+                    }
+                });
         }
     }
 

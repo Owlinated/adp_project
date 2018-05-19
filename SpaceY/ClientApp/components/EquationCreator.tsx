@@ -4,6 +4,7 @@ import { IEvaluationResult } from "../interface/IEvaluationResult";
 import { IRestEquation } from "../interface/IRestEquation";
 import { IRestEquationParam } from "../interface/IRestEquationParam";
 import { IRestNestedEquation } from "../interface/IRestNestedEquation";
+import { formatEquation } from "../support/EquationFormatter";
 import { NumberStatus } from "./data/NumberStatus";
 
 // --- The creator interface which defines the data structure of our component
@@ -76,16 +77,16 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             Result: "",
         };
 
-        // --- Check if we are in Edit mode and act accordingly
-        this.StatesHistory = [this.state];
-
-        // -- Fetch the dropdown equations
+        // --- Fetch the dropdown equations
         fetch(`api/equations?all=true`)
             .then((response) => response.json() as Promise<IRestNestedEquation[]>)
-            .then((data) => { this.setState({ EquationsList: data }); });
-
-        // --- Fetch the main equation
-        this.FetchCurrentEquation();
+            .then((data) => { this.setState({ EquationsList: data }); })
+            .then(() => {
+                // --- Save Initial State
+                this.StatesHistory = [this.state];
+                // --- Check if we are in Edit mode and act accordingly
+                this.FetchCurrentEquation();
+            });
     }
 
     // --- The following function defines the set of buttons that need to be disabled after pressing a certain button
@@ -332,30 +333,36 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     }
 
     // --- Get the value of the current equation which should be sent to the backend
-    public GetEquationValue() {
+    public GetEquationValue(autoFix: boolean) {
         let equationtext = this.state.EquationText;
         let openBrackets = this.state.OpenBrackets;
 
         // Remove trailing operators
-        const trailingOperator = /([×÷\+\-\(\.]|sin|cos)$/;
-        while (equationtext.match(trailingOperator)) {
-            if (equationtext.match(/\($/)) { openBrackets--; }
-            equationtext = equationtext.replace(trailingOperator, "");
+        if (autoFix) {
+            const trailingOperator = /([×÷\+\-\(\.]|sin|cos)$/;
+            while (equationtext.match(trailingOperator)) {
+                if (equationtext.match(/\($/)) {
+                    openBrackets--;
+                }
+                equationtext = equationtext.replace(trailingOperator, "");
+            }
         }
 
         if (equationtext) {
             let result = equationtext
                 // Replace tokens with interface variants
-                .replace(/×/g, "*")
-                .replace(/÷/g, "/")
-                .replace(/X/g, `var(${this.GetUsedParams().indexOf("X")})`)
-                .replace(/Y/g, `var(${this.GetUsedParams().indexOf("Y")})`)
-                .replace(/Z/g, `var(${this.GetUsedParams().indexOf("Z")})`)
-                .replace(/sin\(/g, "Sin\(")
-                .replace(/cos\(/g, "Cos\(")
-                .replace(/EQ/g, "Ref");
-            for (let i = 0; i < openBrackets; ++i) {
-                result += ")";
+                .replace(/×/gi, "*")
+                .replace(/÷/gi, "/")
+                .replace(/X/gi, `Var(${this.GetUsedParams().indexOf("X")})`)
+                .replace(/Y/gi, `Var(${this.GetUsedParams().indexOf("Y")})`)
+                .replace(/Z/gi, `Var(${this.GetUsedParams().indexOf("Z")})`)
+                .replace(/sin\(/gi, "Sin\(")
+                .replace(/cos\(/gi, "Cos\(")
+                .replace(/EQ/gi, "Ref");
+            if (autoFix) {
+                for (let i = 0; i < openBrackets; ++i) {
+                    result += ")";
+                }
             }
             return result;
         } else {
@@ -364,7 +371,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
     }
 
     // -- Build a rest equation form the current state
-    public GetRestEquation(): IRestEquation {
+    public GetRestEquation(autoFix: boolean): IRestEquation {
         const usedParams = this.GetUsedParams();
         const params: IRestEquationParam[] = [];
         for (const param of usedParams) {
@@ -372,11 +379,11 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             params.push({ name: param, description: param, standard: this.state.DefaultValues[index] });
         }
 
-        const desc = this.Description === "" ? "Equation with no description" : this.Description;
+        const desc = this.Description === "" ? "No description" : this.Description;
 
         return {
             description: desc,
-            equation: this.GetEquationValue(),
+            equation: this.GetEquationValue(autoFix),
             id: this.props.match.params.id || -1,
             parameters: params,
         };
@@ -405,7 +412,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
             // Post current equation to evaluator
             fetch("api/Equations/Evaluate",
                 {
-                    body: JSON.stringify(this.GetRestEquation()),
+                    body: JSON.stringify(this.GetRestEquation(true)),
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
@@ -428,7 +435,7 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         // Post current equation
         fetch("api/Equations/",
                 {
-                    body: JSON.stringify(this.GetRestEquation()),
+                    body: JSON.stringify(this.GetRestEquation(true)),
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
@@ -461,23 +468,25 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
         } else {
             this.IsParsing = false;
             this.ShouldRender = true;
+            // --- force updating results and rendering
+            this.setState({});
         }
     }
 
     // --- This function Reloads the component using the text the current equation we want to edit
     public ReloadComponentByEquationText(Eq: IRestEquation) {
         const EqText = Eq.equation;
-        const txt = EqText.replace(/\//g, "÷")
-                        .replace(/\*/g, "×")
-                        .replace(/v/g, "V")
-                        .replace(/Var\(0\)/g, "X")
-                        .replace(/Var\(1\)/g, "Y")
-                        .replace(/Var\(2\)/g, "Z")
-                        .replace(/Sin\(/g, "s")
-                        .replace(/Cos\(/g, "c")
-                        .replace(/Ref\(/g, "e")
-                        .replace(/ref\(/g, "e")
-                        .replace(/\s/g, "");
+        // todo use support/equationformatter.tsx
+        const txt = EqText.replace(/\//gi, "÷")
+                        .replace(/\*/gi, "×")
+                        .replace(/Var\(0\)/gi, "X")
+                        .replace(/Var\(1\)/gi, "Y")
+                        .replace(/Var\(2\)/gi, "Z")
+                        .replace(/Sin\(/gi, "s")
+                        .replace(/Cos\(/gi, "c")
+                        .replace(/Ref\(/gi, "e")
+                        .replace(/ref\(/gi, "e")
+                        .replace(/\s/gi, "");
 
         let i = 0;
         while (i < txt.length) {
@@ -532,11 +541,16 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
 
     // --- The render function of our component
     public render() {
-        if (!this.ShouldRender) { return (<div><h1>Equation Creator</h1><div><p>Loading..</p></div></div>); }
+        if (!this.ShouldRender) { return (<div><h2>Equation Creator</h2><div><p>Loading..</p></div></div>); }
+
+        const formattedEquation =
+            formatEquation(
+                this.GetRestEquation(false),
+                this.state.EquationsList.map((equation) => equation.main));
 
         return (
             <div>
-                <div><h1>Equation Creator</h1></div>
+                <div><h2>Equation Creator</h2></div>
                 <div className="creatorcontainerdiv">
                     <div className="creatorfirstdiv">
                         <div>
@@ -549,21 +563,12 @@ export class EquationCreator extends React.Component<RouteComponentProps<any>, I
                             />
                         </div>
                         <div>
-                            <h4>Current Input:</h4>
+                            <h4>Input:</h4>
                             <textarea
                                 readOnly={true}
-                                rows={1}
+                                rows={2}
                                 className="form-control creatortextarea"
-                                value={this.state.EquationText}
-                            />
-                        </div>
-                        <div>
-                            <h4>Current Value:</h4>
-                            <textarea
-                                readOnly={true}
-                                rows={1}
-                                className="form-control creatortextarea"
-                                value={this.GetEquationValue()}
+                                value={formattedEquation}
                             />
                         </div>
                         <div>

@@ -76,7 +76,8 @@ namespace SpaceY.Controllers
         [HttpPost("{id}/[action]")]
         public object Evaluate(int id, [FromBody]Dictionary<int, Dictionary<int, double>> parameterValues)
         {
-            EquationStore.IncreseEquationCounter(id);   //--- Each time we evaluate an already stored equation, we increase the usage counter.
+            // Each time we evaluate an already stored equation, we increase the usage counter.
+            EquationStore.IncreaseEquationCounter(id);
             return EquationStore.AllEquations.FirstOrDefault(equation => equation.Id == id)?.Evaluate(parameterValues)
                 ?? throw new ArgumentException(nameof(id));
         }
@@ -104,19 +105,24 @@ namespace SpaceY.Controllers
         }
 
         /// <summary>
-        /// Compute the value of an equation with the specified or default parameters.
+        /// Delete an equation only if possible
         /// </summary>
-        [HttpPost("{id}/[action]")]
-        public IEnumerable<RestNestedEquation> Delete(int id, bool all)
+        [HttpGet("{id}/[action]")]
+        public bool Delete(int id)
         {
             try
             {
-                EquationStore.DeleteEquation(id);
-                return List(all);
+                if (!EquationStore.AllEquations.Any(e => e.References.Any(r => r.Id.Equals(id))))
+                {
+                    EquationStore.DeleteEquation(id);
+                    return true;
+                }
+
+                return false;
             }
             catch
             {
-                return List(all);
+                return false;
             }
         }
 

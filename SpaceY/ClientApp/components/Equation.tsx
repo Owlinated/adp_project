@@ -2,6 +2,7 @@ import * as React from "react";
 import { IRestEquation } from "../interface/IRestEquation";
 import { IRestEquationParam } from "../interface/IRestEquationParam";
 import { IRestNestedEquation } from "../interface/IRestNestedEquation";
+import { formatEquation } from "../support/EquationFormatter";
 
 interface IEquationState {
     result: number | undefined;
@@ -52,8 +53,9 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
 
         return (
             <div>
-            <h2>References</h2>
-            {this.props.references.map((reference) => this.renderReference(reference))}
+                <h3>References</h3>
+                {this.props.references.map((reference) => this.renderReference(reference))}
+                <h3>Main Equation</h3>
             </div>
         );
     }
@@ -69,7 +71,7 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
                     <div className="panel-heading">
                         <h4 className="panel-title">
                             <a data-toggle="collapse" href={`#collapse${reference.id}`}>
-                                {reference.equation}
+                                {reference.description}
                             </a>
                         </h4>
                     </div>
@@ -88,9 +90,10 @@ export class Equation extends React.Component<IRestNestedEquation, IEquationStat
      * @param equation The equation to render
      */
     public renderEquation(equation: IRestEquation, isMain: boolean) {
+        const formattedEquation = formatEquation(equation, this.props.references);
         return (
             <div>
-                <p>{isMain ? `${equation.equation} = ${this.state.result}` : equation.equation}</p>
+                <p>{isMain ? `${formattedEquation} = ${this.state.result}` : formattedEquation}</p>
                 {equation.parameters.map((parameter, index) => this.renderParameter(equation, parameter, index))}
             </div>
         );
