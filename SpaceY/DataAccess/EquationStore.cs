@@ -23,50 +23,61 @@ namespace SpaceY.DataAccess
         /// </summary>
         public EquationStore()
         {
-            AddEquation(new Equation("Simple plus V1", "1 + 2"));
-            AddEquation(new Equation("Simple plus V2", "3 + 5"));
-            AddEquation(new Equation("Simple Expression V1", "Sin(0)"));
-            AddEquation(new Equation("Simple plus V3", "1 + 2 + 3 + 4 + 5"));
-            AddEquation(new Equation("Simple Multiplication V1", "7 * 7"));
-            AddEquation(new Equation("Simple plus V4", "5 + 2"));
-            AddEquation(new Equation("Simple plus V5", "359780 + 5.5"));
-            AddEquation(new Equation("Simple Expression V2", "Cos(0)"));
-            AddEquation(new Equation("Simple plus V6", "2 + 4 + 6 + 8 + 9"));
+            string Var(int index) => $"Var({index})";
+            string Ref(Equation reference) => $"Ref({reference.Id})";
 
-            var equation1 = new Equation("Simple Multiplication V2", "5 * 7");
-            AddEquation(equation1);
-
-            var parameters2 = new[]
+            var gravityParams = new[]
             {
                 new RestEquationParam
                 {
-                    Standard = 1.0,
-                    Description = "X",
-                    Name = "X"
+                    Description = "Gravitation (m/s²)",
+                    Name = "g",
+                    Standard = 9.81
                 }
             };
-            var equation2 = new Equation(
-                "Referencing Example",
-                serialized: $"Ref({equation1.Id}) * Var(0) + 1",
-                parameters: parameters2,
-                references: new[] { equation1 });
-            AddEquation(equation2);
+            var gravity = new Equation("Gravity (m/s²)", Var(0), gravityParams);
+            AddEquation(gravity);
 
-            var parameters3 = new[]
+            var exhaustParams = new[]
             {
                 new RestEquationParam
                 {
-                    Standard = 1.0,
-                    Description = "X",
-                    Name = "X"
+                    Description = "Specific Impulse (s)",
+                    Name = "Isp",
+                    Standard = 5
                 }
             };
-            var equation3 = new Equation(
-                "Complicated Referencing Example",
-                serialized: $"Ref({equation1.Id}) + Ref({equation2.Id}) + 3.1415",
-                parameters: parameters2,
-                references: new[] { equation1, equation2 });
-            AddEquation(equation3);
+            var exhaustVelocity = new Equation(
+                "Exhaust Velocity (m/s)",
+                $"{Ref(gravity)}*{Var(0)}",
+                parameters: exhaustParams,
+                references: new[] { gravity });
+            AddEquation(exhaustVelocity);
+
+            var massFlowParams = new[]
+            {
+                new RestEquationParam
+                {
+                    Description = "Propellant Mass Burnt (KG)",
+                    Name = "m",
+                    Standard = 100
+                },
+                new RestEquationParam
+                {
+                    Description = "Burn Duration (s)",
+                    Name = "d",
+                    Standard = 5
+                }
+            };
+            var massFlow = new Equation("Mass Flow (KG/s)", $"{Var(0)}/{Var(1)}", massFlowParams);
+            AddEquation(massFlow);
+
+            var thrust = new Equation(
+                "Thrust (N)",
+                $"{Ref(massFlow)}*{Ref(exhaustVelocity)}",
+                parameters: null,
+                references: new[] { massFlow, exhaustVelocity });
+            AddEquation(thrust);
         }
 
         /// <summary>
