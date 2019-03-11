@@ -1,4 +1,4 @@
-# SpaceY [![Build Status](https://travis-ci.org/flostellbrink/adp_project.svg?branch=master)](https://travis-ci.org/Owlinated/adp_project) [![Heroku](http://heroku-badge.herokuapp.com/?app=adp-spacey&svg=1)](https://adp-spacey.herokuapp.com/)
+# SpaceY [![Build Status](https://travis-ci.org/flostellbrink/adp_project.svg?branch=master)](https://travis-ci.org/flostellbrink/adp_project) [![Heroku](http://heroku-shields.herokuapp.com/adp-spacey)](https://adp-spacey.herokuapp.com/)
 EDA397 Agile Development Processes Team 2
 
 ## Project
